@@ -463,17 +463,36 @@
 
         <div class="mini-caja" style="text-align:left;">
           <label style="font-size:0.85rem; color:var(--pink); font-weight:700;">2. Archivo de tu Cuento (en tu PC):</label>
-          <input id="gen-cuento" type="text" value="cuento.html" placeholder="Ej: cuento.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+          <input id="gen-cuento" type="text" value="cuento.html" placeholder="Ej: cuento.html o cuento/index.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+          <label style="display:inline-block; margin-top:8px; font-size:0.8rem; color:var(--cyan); cursor:pointer; text-decoration:underline;">
+            📂 O tocá acá para buscar tu archivo .html
+            <input type="file" accept=".html,.htm" style="display:none;" onchange="detectarNombreArchivo(this, 'gen-cuento', 'cuento.html')">
+          </label>
         </div>
 
         <div class="mini-caja" style="text-align:left;">
           <label style="font-size:0.85rem; color:var(--amber); font-weight:700;">3. Archivo de tu Juego (en tu PC):</label>
-          <input id="gen-juego" type="text" value="juego.html" placeholder="Ej: juego.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+          <input id="gen-juego" type="text" value="juego.html" placeholder="Ej: juego.html o juego/index.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+          <label style="display:inline-block; margin-top:8px; font-size:0.8rem; color:var(--cyan); cursor:pointer; text-decoration:underline;">
+            📂 O tocá acá para buscar tu archivo .html
+            <input type="file" accept=".html,.htm" style="display:none;" onchange="detectarNombreArchivo(this, 'gen-juego', 'juego.html')">
+          </label>
         </div>
       </div>
 
+      <div id="aviso-nombre" style="display:none; background:rgba(251,191,36,0.18); border:1px solid var(--amber); padding:12px 16px; border-radius:12px; margin-bottom:14px; font-size:0.9rem; color:#fef08a;"></div>
+
       <div style="background: rgba(0,0,0,0.35); padding: 16px; border-radius: 16px; margin-bottom: 18px; font-size: 0.95rem;">
-        <strong>📋 Pasos en la compu de Vicky:</strong>
+        <strong>💡 ¿Cómo sabe el <code>index.html</code> dónde están tus archivos sin preguntarte la ruta <code>C:\Users\...</code>?</strong>
+        <p style="color:#cbd5e1; margin: 6px 0 12px; font-size:0.9rem;">
+          ¡Porque usa <strong>Rutas Relativas (de vecinos)</strong>! Mientras pongas los 3 archivos juntos adentro de la <strong>misma carpeta</strong>, el navegador busca automáticamente al archivo de al lado, sin importar en qué compu o servidor del mundo esté esa carpeta:
+        </p>
+        <div style="font-family:Consolas,monospace; background:#070612; padding:12px; border-radius:10px; color:#38bdf8; font-size:0.86rem; margin-bottom:12px;">
+          📂 <strong>Mi-Web-Vicky/</strong> (cualquier carpeta en tu compu)<br>
+          &nbsp;&nbsp;├── 📄 <strong style="color:#10b981;">index.html</strong> &nbsp;&nbsp;&nbsp;← <em>El menú que descargás acá</em><br>
+          &nbsp;&nbsp;├── 📄 <strong style="color:#f472b6;">cuento.html</strong> &nbsp;&nbsp;← <em>Tu cuento al lado</em><br>
+          &nbsp;&nbsp;└── 📄 <strong style="color:#fbbf24;">juego.html</strong> &nbsp;&nbsp;&nbsp;← <em>Tu juego al lado</em>
+        </div>
         <ol style="margin-left: 20px; margin-top: 8px; color: #e2e8f0;">
           <li>Creá una carpeta nueva en tu Escritorio (por ejemplo <code>Web-Vicky</code>).</li>
           <li>Meté adentro de esa carpeta el archivo <code>.html</code> de tu <strong>cuento</strong> y el <code>.html</code> de tu <strong>juego</strong> (más las imágenes o audios si tienen).</li>
@@ -589,6 +608,21 @@
       const url = window.location.href;
       const msg = encodeURIComponent('¡Mirá la página web que hicimos y subimos a Internet! 🚀✨ ' + url);
       window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+
+    function detectarNombreArchivo(inputEl, targetInputId, nombreSugerido) {
+      if (!inputEl.files || !inputEl.files[0]) return;
+      const nombreReal = inputEl.files[0].name;
+      const aviso = document.getElementById('aviso-nombre');
+      if (nombreReal.toLowerCase() === 'index.html') {
+        document.getElementById(targetInputId).value = nombreSugerido;
+        aviso.style.display = 'block';
+        aviso.innerHTML = `⚠️ <strong>¡Atención!</strong> El archivo que elegiste se llama <code>index.html</code>. Como la portada principal ya se llama <code>index.html</code>, cambiále el nombre a tu archivo por <strong><code>${nombreSugerido}</code></strong> cuando lo guardes en la carpeta.`;
+      } else {
+        document.getElementById(targetInputId).value = nombreReal;
+        aviso.style.display = 'none';
+      }
+      sonarNota(659.25, 0.2, 0);
     }
 
     function descargarPortadaVicky() {
