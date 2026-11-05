@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estación Aurora - Cuento Interactivo</title>
+  <!-- Mirá cómo reutilizamos exactamente el mismo estilos.css de la portada -->
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <div class="contenedor">
+    <div style="margin-bottom: 18px;">
+      <!-- 🔗 Vínculo relativo de regreso a index.html -->
+      <a class="boton-link boton-secundario" href="index.html">⬅ Volver a la portada (index.html)</a>
+    </div>
+
+    <article class="hero" style="text-align: left;">
+      <span class="etiqueta-ruta">Estás leyendo: /cuento-estelar.html</span>
+      <h1 id="titulo-escena">🚀 Capítulo 1: La Señal Misteriosa</h1>
+      <p id="texto-escena" style="font-size: 1.1rem; color: #e2e8f0; margin: 16px 0 24px;">
+        Estás en la cabina de la Estación Aurora, orbitando un planeta violeta. De pronto, la consola central empieza a brillar y capta una melodía desconocida que viene desde un portal luminoso frente a tu nave. ¿Qué hacés?
+      </p>
+
+      <!-- Audio que también se dispara cuando toma una decisión -->
+      <audio id="audio-portal" src="audios/portal-magico.wav"></audio>
+
+      <div id="opciones" style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="boton-link" onclick="elegir('portal')">✨ Atravesar el portal luminoso</button>
+        <button class="boton-link boton-secundario" onclick="elegir('mensaje')">📡 Decodificar la señal musical</button>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    function elegir(camino) {
+      const audio = document.getElementById('audio-portal');
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+
+      const titulo = document.getElementById('titulo-escena');
+      const texto = document.getElementById('texto-escena');
+      const opciones = document.getElementById('opciones');
+
+      if (camino === 'portal') {
+        titulo.textContent = '🌌 Final A: Ciudad de Cristal';
+        texto.textContent = '¡Cruzaste el portal! Del otro lado descubrís una ciudad flotante donde la gravedad funciona al revés y los edificios suenan como sintetizadores cuando pasa el viento.';
+      } else {
+        titulo.textContent = '🎶 Final B: El Código Musical';
+        texto.textContent = 'Al traducir las notas musicales en coordenadas, el mapa revela un planeta oculto creado por viajeros del futuro que te dan la bienvenida.';
+      }
+
+      opciones.innerHTML = `
+        <button class="boton-link" onclick="location.reload()">🔄 Jugar otra vez</button>
+        <a class="boton-link boton-secundario" href="index.html">🏠 Volver al Portal Principal</a>
+      `;
+    }
+  </script>
+</body>
+</html>

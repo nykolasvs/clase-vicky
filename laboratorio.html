@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio Interactivo: Navegadores, URLs y Servidores</title>
+  <style>
+    :root {
+      --bg: #0b0d1a;
+      --panel: rgba(22, 27, 51, 0.85);
+      --panel-soft: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.13);
+      --pink: #ec4899;
+      --purple: #8b5cf6;
+      --cyan: #38bdf8;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 10%, #241748 0%, var(--bg) 55%),
+                  radial-gradient(circle at 85% 85%, #112d4e 0%, var(--bg) 60%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px 16px 60px;
+      line-height: 1.55;
+    }
+
+    .app { max-width: 1060px; margin: 0 auto; position: relative; z-index: 2; }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 14px 20px;
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 18px;
+    }
+
+    .proto-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .url-live {
+      font-family: Consolas, monospace;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      background: rgba(0,0,0,0.45);
+      padding: 6px 12px;
+      border-radius: 8px;
+      max-width: 440px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 11px;
+      padding: 9px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(236, 72, 153, 0.28);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+
+    /* Header */
+    .header-title {
+      text-align: center;
+      margin: 10px 0 20px;
+    }
+
+    .header-title h1 {
+      font-size: 2rem;
+      background: linear-gradient(90deg, #fff, #f472b6, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-title p { color: var(--muted); font-size: 1rem; margin-top: 4px; }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: var(--panel);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 13px 12px;
+      border-radius: 14px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .tab-btn span.step-num {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--cyan);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.22), rgba(139, 92, 246, 0.25));
+      border-color: var(--pink);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.22);
+    }
+
+    /* Panels */
+    .panel {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 26px;
+      backdrop-filter: blur(12px);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel h2 { font-size: 1.5rem; margin-bottom: 8px; }
+    .lead { color: var(--muted); margin-bottom: 22px; font-size: 1rem; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .box {
+      background: rgba(0, 0, 0, 0.32);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .code-view {
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 0.84rem;
+      background: #070913;
+      color: #e2e8f0;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      margin-top: 12px;
+    }
+
+    /* Tab 1: Browser X-Ray toggles */
+    .layer-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .layer-toggle input { transform: scale(1.3); accent-color: var(--pink); }
+
+    .preview-stage {
+      min-height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 14px;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .preview-stage.styled {
+      background: linear-gradient(135deg, #1e1b4b, #311042);
+      color: #ffffff;
+    }
+
+    .demo-card-styled {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(244, 114, 182, 0.5);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    /* Tab 2: Folder Suitcase */
+    .folder-tree {
+      font-family: Consolas, monospace;
+      font-size: 0.92rem;
+      line-height: 1.9;
+      background: #070913;
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px dashed var(--cyan);
+    }
+
+    .result-banner {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.94rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Tab 3: WhatsApp Simulator */
+    .phone-frame {
+      background: #0b141a;
+      border: 2px solid #334155;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .phone-header {
+      background: #1f2c34;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .chat-area {
+      padding: 16px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      word-break: break-all;
+    }
+
+    .bubble.sent {
+      background: #005c4b;
+      align-self: flex-end;
+    }
+
+    .bubble.reply-err {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid var(--red);
+      align-self: flex-start;
+    }
+
+    .bubble.reply-ok {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--green);
+      align-self: flex-start;
+    }
+
+    /* Tab 4: URL Dissector & Server Journey */
+    .url-blocks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #070913;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      justify-content: center;
+    }
+
+    .url-part {
+      font-family: Consolas, monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .url-part:hover { transform: scale(1.06); }
+    .p-proto { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid #10b981; }
+    .p-sub   { background: rgba(236, 72, 153, 0.22); color: #f472b6; border: 1px solid #ec4899; }
+    .p-dom   { background: rgba(139, 92, 246, 0.22); color: #c084fc; border: 1px solid #8b5cf6; }
+    .p-path  { background: rgba(56, 189, 248, 0.22); color: #38bdf8; border: 1px solid #38bdf8; }
+
+    .journey-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .station {
+      background: rgba(0,0,0,0.38);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      transition: all 0.25s ease;
+      opacity: 0.55;
+    }
+
+    .station.lit {
+      opacity: 1;
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(56, 189, 248, 0.22);
+    }
+
+    .station .icon { font-size: 2rem; margin-bottom: 6px; }
+
+    /* Tab 5: Missions & Launch */
+    .mission-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .mission-item.done {
+      border-color: var(--green);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    .mission-item input {
+      margin-top: 4px;
+      transform: scale(1.35);
+      accent-color: var(--green);
+    }
+
+    .input-url {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: #070913;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .tip-note {
+      margin-top: 16px;
+      padding: 13px 16px;
+      border-left: 4px solid var(--cyan);
+      background: rgba(56, 189, 248, 0.09);
+      border-radius: 0 12px 12px 0;
+      font-size: 0.92rem;
+      color: #e2e8f0;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app">
+    <!-- Barra superior: Detector de Protocolo en Vivo + Sonido + Reloj -->
+    <div class="topbar">
+      <div class="proto-badge" id="proto-pill">
+        <span class="dot" id="proto-dot"></span>
+        <span id="proto-label">Detectando protocolo...</span>
+      </div>
+
+      <div class="url-live" id="live-url-bar" title="Esta es la dirección exacta que está leyendo tu navegador ahora mismo"></div>
+
+      <div class="controls-right">
+        <button class="btn-ghost" onclick="tocarSonidoProtocolo()" title="Escuchar el nivel actual">🎵 Nivel Sonoro</button>
+        <button class="btn-ghost" id="btn-mute" onclick="toggleMute()">🔊 Sonido: ON</button>
+        <button class="btn-ghost" onclick="toggleTimer()" id="btn-timer">⏱️ 60:00 (Iniciar)</button>
+      </div>
+    </div>
+
+    <div class="header-title">
+      <h1>🚀 De tu Compu a Todo el Mundo: ¿Cómo funciona la Web?</h1>
+      <p>Laboratorio interactivo paso a paso — Navegadores, Archivos, Vínculos, URLs y Servidores</p>
+    </div>
+
+    <!-- Pestañas de los 5 bloques de la clase -->
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="abrirTab(0)">
+        <span class="step-num">Paso 1 • 10 min</span>
+        <strong>🌐 El Navegador (Rayos X)</strong>
+      </button>
+      <button class="tab-btn" onclick="abrirTab(1)">
+        <span class="step-num">Paso 2 • 15 min</span>
+        <strong>📁 Archivos, Audios y Links</strong>
+      </button>
+      <button class="tab-btn" onclick="abrirTab(2)">
+        <span class="step-num">Paso 3 • 12 min</span>
+        <strong>⚡ file:// vs http://</strong>
+      </button>
+      <button class="tab-btn" onclick="abrirTab(3)">
+        <span class="step-num">Paso 4 • 10 min</span>
+        <strong>🔗 URLs y Servidores</strong>
+      </button>
+      <button class="tab-btn" onclick="abrirTab(4)">
+        <span class="step-num">Paso 5 • 13 min</span>
+        <strong>🚀 ¡Subir a Internet!</strong>
+      </button>
+    </nav>
+
+    <!-- =====================================================================
+         PESTAÑA 1: QUÉ ES UN NAVEGADOR
+         ===================================================================== -->
+    <section class="panel active" id="tab-0">
+      <h2>🌐 ¿Qué es realmente un Navegador Web?</h2>
+      <p class="lead">
+        Chrome, Edge o Safari son <strong>traductores e intérpretes</strong>. Tus archivos <code>.html</code> y <code>.css</code> son simplemente archivos de texto (¡podrías abrirlos con el Bloc de Notas!), pero el navegador los lee y dibuja una experiencia visual con imágenes, botones y sonido.
+      </p>
+
+      <div class="two-col">
+        <div class="box">
+          <h3 style="margin-bottom: 12px;">🎛️ Prendé y apagá las capas:</h3>
+
+          <label class="layer-toggle">
+            <div>
+              <strong>1. HTML (El Esqueleto)</strong>
+              <div style="font-size: 0.83rem; color: var(--muted);">Define qué textos, imágenes, audios y links existen.</div>
+            </div>
+            <input type="checkbox" id="chk-html" checked onchange="actualizarRayosX()">
+          </label>
+
+          <label class="layer-toggle">
+            <div>
+              <strong>2. CSS (El Vestuario / Diseño)</strong>
+              <div style="font-size: 0.83rem; color: var(--muted);">Le da colores neón, tipografías, bordes redondeados y magia visual.</div>
+            </div>
+            <input type="checkbox" id="chk-css" checked onchange="actualizarRayosX()">
+          </label>
+
+          <label class="layer-toggle">
+            <div>
+              <strong>3. JavaScript + Audio (El Cerebro)</strong>
+              <div style="font-size: 0.83rem; color: var(--muted);">Hace que al tocar un botón pasen cosas y suene música.</div>
+            </div>
+            <input type="checkbox" id="chk-js" checked onchange="actualizarRayosX()">
+          </label>
+
+          <div class="code-view" id="xray-code"></div>
+        </div>
+
+        <div class="box">
+          <h3 style="margin-bottom: 12px;">👁️ Lo que dibuja el Navegador:</h3>
+          <div class="preview-stage styled" id="xray-stage"></div>
+
+          <div class="tip-note">
+            <strong>🕵️‍♀️ Experimento rápido ahora mismo:</strong> Apretá <code>Ctrl + U</code> en tu teclado (o clic derecho ➔ <em>Ver código fuente de la página</em>). ¡Vas a ver el texto crudo que tu navegador acaba de leer para dibujar esta pantalla!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PESTAÑA 2: ARCHIVOS, CARPETAS, VÍNCULOS Y AUDIOS
+         ===================================================================== -->
+    <section class="panel" id="tab-1">
+      <h2>📁 ¿Cómo viajan juntos los Archivos, Vínculos y Audios?</h2>
+      <p class="lead">
+        Una página web rara vez es un solo archivo suelto: es una <strong>carpeta (como una valija de viaje)</strong> donde el HTML llama a imágenes, estilos y canciones. ¡Si un archivo queda afuera de la valija, en Internet no se va a escuchar ni ver!
+      </p>
+
+      <div class="two-col">
+        <div class="box">
+          <h3 style="margin-bottom: 10px;">🧳 La Valija Lista para el Servidor:</h3>
+          <div class="folder-tree">
+📂 <strong>2-mi-portal-para-subir/</strong>
+ ├── 📄 <span style="color:#f472b6">index.html</span>       <span style="color:#94a3b8">← ¡La puerta de entrada!</span>
+ ├── 📄 <span style="color:#38bdf8">cuento-estelar.html</span> <span style="color:#94a3b8">← Otra página conectada</span>
+ ├── 🎨 <span style="color:#c084fc">estilos.css</span>      <span style="color:#94a3b8">← Colores y diseño</span>
+ ├── 📂 <strong>imagenes/</strong>
+ │    └── 🖼️ portada-galaxia.svg
+ └── 📂 <strong>audios/</strong>
+      ├── 🎵 ambiente-espacial.wav
+      └── 🎵 mi-cancion-suno.mp3
+          </div>
+          <div class="tip-note">
+            <strong>¿Por qué el archivo principal SIEMPRE se llama <code>index.html</code> (en minúscula)?</strong><br>
+            Porque cuando alguien entra a una URL sin especificar archivo (ej. <code>https://mi-web.netlify.app/</code>), todos los servidores del mundo buscan automáticamente un archivo llamado <code>index.html</code> para abrir primero.
+          </div>
+        </div>
+
+        <div class="box">
+          <h3 style="margin-bottom: 10px;">🧪 Simulador: ¿Por qué se rompen los audios o fotos al subir una web?</h3>
+          <p style="font-size: 0.92rem; color: var(--muted); margin-bottom: 14px;">
+            Probá cómo escribir la ruta de tu canción de Suno dentro del HTML:
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn-danger" onclick="probarRuta('mala')">
+              ❌ Probar: src="C:\Users\Chica\Descargas\cancion.mp3"
+            </button>
+            <button class="btn-success" onclick="probarRuta('buena')">
+              ✅ Probar: src="audios/ambiente-espacial.wav"
+            </button>
+          </div>
+
+          <div class="result-banner" id="resultado-ruta">
+            👆 Tocá uno de los dos botones para simular qué pasa cuando subís el HTML a Internet.
+          </div>
+
+          <h4 style="margin: 18px 0 8px;">🔗 Los 2 tipos de Vínculos (<code>&lt;a href="..."&gt;</code>):</h4>
+          <div class="code-view">&lt;!-- 1. Vínculo RELATIVO (a otro HTML de tu misma carpeta) --&gt;
+&lt;a href="cuento-estelar.html"&gt;Ir a mi cuento&lt;/a&gt;
+
+&lt;!-- 2. Vínculo EXTERNO (a otro servidor en Internet: lleva https://) --&gt;
+&lt;a href="https://suno.com" target="_blank"&gt;Ir a Suno&lt;/a&gt;</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PESTAÑA 3: FILE:// VS HTTP://
+         ===================================================================== -->
+    <section class="panel" id="tab-2">
+      <h2>⚡ ¿Por qué existe <code>file://</code> y por qué existe <code>http://</code>?</h2>
+      <p class="lead">
+        Cuando hacés doble clic en un HTML en tu compu, la barra de arriba empieza con <code>file:///C:/...</code>. ¿Qué pasa si copiás esa dirección y se la mandás por WhatsApp a una amiga? ¡Hagamos la prueba!
+      </p>
+
+      <div class="two-col">
+        <div class="box">
+          <h3 style="margin-bottom: 12px;">📲 Elegí qué link mandarle a tu amiga:</h3>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="btn-ghost" style="text-align:left; border-color: var(--amber);" onclick="simularWhatsApp('file')">
+              1️⃣ Mandar link local:<br>
+              <code style="color:var(--amber); font-size:0.82rem;">file:///C:/Users/Compu/cuento.html</code>
+            </button>
+
+            <button class="btn-ghost" style="text-align:left; border-color: var(--cyan);" onclick="simularWhatsApp('local')">
+              2️⃣ Encender servidor en mi PC (mismo Wi-Fi):<br>
+              <code style="color:var(--cyan); font-size:0.82rem;">http://localhost:8000/</code>
+            </button>
+
+            <button class="btn-primary" style="text-align:left;" onclick="simularWhatsApp('https')">
+              3️⃣ Subirlo a un Servidor Gratis en Internet:<br>
+              <code style="color:#fff; font-size:0.82rem;">https://mis-cuentos.netlify.app</code>
+            </button>
+          </div>
+
+          <div class="tip-note">
+            <strong>🧪 ¡Hagan la prueba real ahora!</strong><br>
+            Vayan a la carpeta de la clase y hagan doble clic en <code>iniciar-servidor-local.bat</code>. Se va a abrir esta misma página pero con <code>http://localhost:8000</code> arriba. ¡Miren cómo cambia el cartel detector de arriba de todo!
+          </div>
+        </div>
+
+        <div class="phone-frame">
+          <div class="phone-header">
+            <span>📱</span>
+            <div>
+              <div>WhatsApp • Mejor Amiga 💬</div>
+              <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 400;">Usando datos móviles 5G (en su casa)</div>
+            </div>
+          </div>
+          <div class="chat-area" id="wa-chat">
+            <div style="text-align:center; color:#94a3b8; font-size:0.85rem; margin-top: 50px;">
+              Elegí un link a la izquierda para mandárselo a tu amiga y ver qué ocurre en su celular 👈
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PESTAÑA 4: ANATOMÍA DE UNA URL Y QUÉ ES UN SERVIDOR
+         ===================================================================== -->
+    <section class="panel" id="tab-3">
+      <h2>🔗 Desarmando una URL + ¿Qué es un Servidor?</h2>
+      <p class="lead">
+        <strong>URL</strong> significa "Dirección Única de un Recurso". Es como la dirección exacta de una casa + el departamento al que querés tocar timbre. ¡Hacé clic en cada bloque de colores para escuchar y ver qué hace!
+      </p>
+
+      <div style="margin-bottom: 12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <label style="font-size:0.9rem; color:var(--muted);">✏️ Probá escribir el nombre de tu futura web:</label>
+        <input type="text" id="custom-sub" value="cuentos-estelares" oninput="actualizarSubdominio()" style="background:#070913; color:#fff; border:1px solid var(--pink); border-radius:8px; padding:6px 12px; font-family:Consolas,monospace;">
+      </div>
+
+      <div class="url-blocks">
+        <span class="url-part p-proto" onclick="explicarURL('proto')">https://</span>
+        <span class="url-part p-sub" id="url-sub-view" onclick="explicarURL('sub')">cuentos-estelares</span>
+        <span class="url-part p-dom" onclick="explicarURL('dom')">.netlify.app</span>
+        <span class="url-part p-path" onclick="explicarURL('path')">/cuento-estelar.html</span>
+      </div>
+
+      <div class="result-banner" id="url-explicacion" style="margin-bottom: 24px;">
+        👆 <strong>Tocá cada parte de la URL de arriba</strong> para descubrir qué significa cada pedacito.
+      </div>
+
+      <div class="box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3>🏢 ¿Qué es un Servidor y cómo responde en milisegundos?</h3>
+            <p style="font-size:0.9rem; color:var(--muted);">Un servidor no es magia: es una computadora sin pantalla ni teclado, prendida las 24 horas en un centro de datos con Internet ultra rápido.</p>
+          </div>
+          <button class="btn-primary" onclick="simularViajeServidor()">▶ Simular Pedido al Servidor</button>
+        </div>
+
+        <div class="journey-grid">
+          <div class="station" id="st-0">
+            <div class="icon">📱</div>
+            <strong>1. Tu Navegador</strong>
+            <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">Escribís la URL y pide: <em>"¡Mandame index.html!"</em></p>
+          </div>
+          <div class="station" id="st-1">
+            <div class="icon">🧭</div>
+            <strong>2. DNS (Agenda)</strong>
+            <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">Traduce el nombre de tu URL al número IP exacto del servidor.</p>
+          </div>
+          <div class="station" id="st-2">
+            <div class="icon">🖥️</div>
+            <strong>3. Servidor 24/7</strong>
+            <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">Busca tu carpeta y envía el HTML, CSS, fotos y audios.</p>
+          </div>
+          <div class="station" id="st-3">
+            <div class="icon">✨</div>
+            <strong>4. ¡Web en Pantalla!</strong>
+            <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">El navegador arma las piezas en menos de medio segundo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PESTAÑA 5: MISIONES PRÁCTICAS Y LANZAMIENTO A INTERNET
+         ===================================================================== -->
+    <section class="panel" id="tab-4">
+      <h2>🚀 ¡Hora de Publicar tu Creación en Internet!</h2>
+      <p class="lead">
+        Marquen cada misión a medida que la van completando hoy en clase. Al final, pegá tu primera URL real para festejar.
+      </p>
+
+      <div class="two-col">
+        <div>
+          <label class="mission-item" onclick="checkMision(this)">
+            <input type="checkbox">
+            <div>
+              <strong>Misión 1: Rayos X al Navegador</strong>
+              <div style="font-size:0.86rem; color:var(--muted);">Abrir el código fuente con <code>Ctrl + U</code> o inspeccionar con <code>F12</code> para ver el HTML por dentro.</div>
+            </div>
+          </label>
+
+          <label class="mission-item" onclick="checkMision(this)">
+            <input type="checkbox">
+            <div>
+              <strong>Misión 2: Personalizar <code>2-mi-portal-para-subir</code></strong>
+              <div style="font-size:0.86rem; color:var(--muted);">Abrir <code>index.html</code> y <code>estilos.css</code>, poner tu nombre/apodo y elegir tus colores favoritos.</div>
+            </div>
+          </label>
+
+          <label class="mission-item" onclick="checkMision(this)">
+            <input type="checkbox">
+            <div>
+              <strong>Misión 3: Conectar tus HTML y Audios anteriores</strong>
+              <div style="font-size:0.86rem; color:var(--muted);">Copiar adentro de <code>2-mi-portal-para-subir</code> los cuentos HTML de la clase pasada (¡y canciones de Suno en <code>audios/</code>!) y vincularlos con <code>&lt;a href="..."&gt;</code>.</div>
+            </div>
+          </label>
+
+          <label class="mission-item" onclick="checkMision(this)">
+            <input type="checkbox">
+            <div>
+              <strong>Misión 4: De <code>file://</code> a <code>http://localhost:8000</code></strong>
+              <div style="font-size:0.86rem; color:var(--muted);">Ejecutar <code>iniciar-servidor-local.bat</code> y comprobar cómo cambia la URL y el protocolo.</div>
+            </div>
+          </label>
+
+          <label class="mission-item" onclick="checkMision(this)">
+            <input type="checkbox">
+            <div>
+              <strong>Misión 5: Subir la carpeta a un Servidor Gratuito</strong>
+              <div style="font-size:0.86rem; color:var(--muted);">Entrar a <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--cyan);">app.netlify.com/drop</a> y arrastrar la carpeta entera <code>2-mi-portal-para-subir</code> al navegador.</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="box">
+          <h3 style="margin-bottom: 10px;">🎉 Lanzador Oficial de tu Primera URL</h3>
+          <p style="font-size:0.9rem; color:var(--muted); margin-bottom:14px;">
+            1. Abrí <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--pink); font-weight:700;">Netlify Drop ↗</a> (o <a href="https://tiiny.host" target="_blank" style="color:var(--cyan);">Tiiny.host ↗</a>).<br>
+            2. Arrastrá la carpeta <code>2-mi-portal-para-subir</code> a la pantalla.<br>
+            3. Copiá la URL <code>https://...</code> que te dio el servidor y pegala acá:
+          </p>
+
+          <input class="input-url" type="url" id="mi-nueva-url" placeholder="https://mi-sitio-increible.netlify.app">
+          <button class="btn-primary" style="width:100%; padding:13px;" onclick="celebrarLanzamiento()">
+            🎊 ¡Celebrar y Probar mi URL en Vivo!
+          </button>
+
+          <div id="panel-celebracion" style="display:none; margin-top:16px; padding:14px; border-radius:14px; background:rgba(16,185,129,0.16); border:1px solid var(--green);">
+            <div style="font-weight:700; color:#34d399; margin-bottom:10px;">🌟 ¡FELICITACIONES! Tu web ya existe en Internet:</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <a id="btn-abrir-real" href="#" target="_blank" class="btn-success" style="text-decoration:none; padding:9px 14px; border-radius:10px; font-size:0.88rem;">🌐 Abrir mi Web</a>
+              <a id="btn-wa-real" href="#" target="_blank" class="btn-ghost" style="text-decoration:none; padding:9px 14px; border-radius:10px; font-size:0.88rem;">📲 Compartir por WhatsApp</a>
+            </div>
+          </div>
+
+          <div class="tip-note">
+            <strong>💡 Tip para guardarla para siempre:</strong> En Netlify Drop, si creás una cuenta gratis con Google o email ("Sign up / Claim site"), la web no se borra nunca y en <em>Site configuration ➔ Change site name</em> podés cambiarle el nombre de la URL por el que ella elija.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /* =========================================================================
+       SISTEMA DE SONIDO INTERACTIVO (Web Audio API - cero archivos externos)
+       ========================================================================= */
+    let audioCtx = null;
+    let muted = false;
+
+    function getCtx() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTone(freq, dur = 0.18, type = 'sine', delay = 0, vol = 0.14) {
+      if (muted) return;
+      try {
+        const ctx = getCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur + 0.02);
+      } catch (e) {}
+    }
+
+    function playChimeOk() {
+      playTone(523.25, 0.16, 'triangle', 0);
+      playTone(659.25, 0.16, 'triangle', 0.09);
+      playTone(783.99, 0.28, 'triangle', 0.18);
+    }
+
+    function playErrorBuzz() {
+      playTone(190, 0.18, 'sawtooth', 0, 0.1);
+      playTone(145, 0.28, 'sawtooth', 0.15, 0.1);
+    }
+
+    function playFanfare() {
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((n, i) => playTone(n, 0.32, 'triangle', i * 0.11, 0.16));
+    }
+
+    function toggleMute() {
+      muted = !muted;
+      document.getElementById('btn-mute').textContent = muted ? '🔇 Sonido: OFF' : '🔊 Sonido: ON';
+      if (!muted) playTone(660, 0.12, 'triangle');
+    }
+
+    /* =========================================================================
+       DETECTOR DE PROTOCOLO EN VIVO (file:// vs http:// vs https://)
+       ========================================================================= */
+    function detectarProtocoloActual() {
+      const proto = window.location.protocol;
+      const host = window.location.hostname;
+      const dot = document.getElementById('proto-dot');
+      const label = document.getElementById('proto-label');
+      document.getElementById('live-url-bar').textContent = window.location.href;
+
+      if (proto === 'file:') {
+        dot.style.background = '#f59e0b';
+        label.innerHTML = '📁 <strong>Nivel 1: file://</strong> (Archivo local en disco)';
+      } else if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.')) {
+        dot.style.background = '#38bdf8';
+        label.innerHTML = '🖥️ <strong>Nivel 2: http://</strong> (Servidor Web en tu Compu)';
+      } else {
+        dot.style.background = '#10b981';
+        label.innerHTML = '🌎 <strong>Nivel 3: ' + proto + '//</strong> (¡Servidor en Internet!)';
+      }
+    }
+
+    function tocarSonidoProtocolo() {
+      const proto = window.location.protocol;
+      if (proto === 'file:') {
+        playTone(440, 0.25, 'sine', 0);
+      } else if (proto === 'http:') {
+        playChimeOk();
+      } else {
+        playFanfare();
+      }
+    }
+
+    /* =========================================================================
+       NAVEGACIÓN DE PESTAÑAS Y CRONÓMETRO DE 60 MINUTOS
+       ========================================================================= */
+    function abrirTab(idx) {
+      playTone(480 + idx * 70, 0.12, 'triangle');
+      document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+      document.querySelectorAll('.panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
+
+    let timerSeconds = 60 * 60;
+    let timerInterval = null;
+    function toggleTimer() {
+      const btn = document.getElementById('btn-timer');
+      playTone(600, 0.1);
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = '⏸️ ' + formatTime(timerSeconds) + ' (Pausado)';
+      } else {
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) timerSeconds--;
+          btn.textContent = '⏱️ ' + formatTime(timerSeconds);
+        }, 1000);
+      }
+    }
+
+    function formatTime(s) {
+      const m = String(Math.floor(s / 60)).padStart(2, '0');
+      const sec = String(s % 60).padStart(2, '0');
+      return `${m}:${sec}`;
+    }
+
+    /* =========================================================================
+       TAB 1: SIMULADOR RAYOS X DEL NAVEGADOR
+       ========================================================================= */
+    function actualizarRayosX() {
+      playTone(580, 0.1, 'sine');
+      const hasHtml = document.getElementById('chk-html').checked;
+      const hasCss = document.getElementById('chk-css').checked;
+      const hasJs = document.getElementById('chk-js').checked;
+
+      const stage = document.getElementById('xray-stage');
+      const code = document.getElementById('xray-code');
+
+      if (!hasHtml) {
+        stage.className = 'preview-stage';
+        stage.innerHTML = '<em style="color:#64748b;">(Sin HTML la página está completamente vacía: no hay texto ni botones)</em>';
+        code.textContent = '<!-- Sin archivo .html el navegador no tiene estructura que mostrar -->';
+        return;
+      }
+
+      if (!hasCss) {
+        stage.className = 'preview-stage';
+        stage.innerHTML = `
+          <div>
+            <h3 style="font-family: Times New Roman, serif; margin-bottom:6px;">Mi Cuento Musical</h3>
+            <p style="font-family: Times New Roman, serif; margin-bottom:10px;">Tocá el botón para activar el portal mágico.</p>
+            <button onclick="${hasJs ? 'sonarDemoBoton()' : ''}" style="all: revert; cursor: pointer;">Activar Portal</button>
+          </div>
+        `;
+      } else {
+        stage.className = 'preview-stage styled';
+        stage.innerHTML = `
+          <div class="demo-card-styled">
+            <h3 style="font-size:1.3rem; color:#f472b6; margin-bottom:6px;">✨ Mi Cuento Musical ✨</h3>
+            <p style="font-size:0.92rem; color:#e2e8f0; margin-bottom:14px;">Tocá el botón para activar el portal mágico.</p>
+            <button class="btn-primary" onclick="${hasJs ? 'sonarDemoBoton(this)' : 'sinJsAviso(this)'}">🔮 Activar Portal</button>
+          </div>
+        `;
+      }
+
+      let snippet = '<!-- HTML -->\n<h3>Mi Cuento Musical</h3>\n<button>Activar Portal</button>';
+      if (hasCss) snippet += '\n\n/* CSS */\n.tarjeta { background: #311042; color: #f472b6; border-radius: 18px; }';
+      if (hasJs) snippet += '\n\n// JavaScript\nboton.onclick = () => reproducirSonidoMagico();';
+      code.textContent = snippet;
+    }
+
+    function sonarDemoBoton(btn) {
+      playFanfare();
+      if (btn) {
+        const original = btn.innerHTML;
+        btn.innerHTML = '🎶 ¡Portal Activado con Sonido!';
+        setTimeout(() => btn.innerHTML = original, 1400);
+      }
+    }
+
+    function sinJsAviso(btn) {
+      const original = btn.innerHTML;
+      btn.innerHTML = '😶 (JS apagado: el botón no hace nada)';
+      setTimeout(() => btn.innerHTML = original, 1400);
+    }
+
+    /* =========================================================================
+       TAB 2: SIMULADOR DE RUTAS DE ARCHIVOS Y AUDIOS
+       ========================================================================= */
+    function probarRuta(tipo) {
+      const box = document.getElementById('resultado-ruta');
+      if (tipo === 'mala') {
+        playErrorBuzz();
+        box.style.borderColor = '#ef4444';
+        box.style.background = 'rgba(239, 68, 68, 0.14)';
+        box.innerHTML = `
+          <strong style="color:#f87171;">❌ ERROR 404 EN INTERNET: Audio no encontrado</strong><br>
+          En tu compu funcionaba porque vos tenés la carpeta <code>C:\\Users\\Chica\\Descargas</code>. Pero cuando subís la web a un servidor en la nube, ¡ese servidor no tiene tu disco C: ni tu carpeta Descargas!
+        `;
+      } else {
+        playChimeOk();
+        box.style.borderColor = '#10b981';
+        box.style.background = 'rgba(16, 185, 129, 0.14)';
+        box.innerHTML = `
+          <strong style="color:#34d399;">✅ ¡FUNCIONA EN TU COMPU Y EN TODO EL MUNDO!</strong><br>
+          Como usaste una <strong>ruta relativa</strong> (<code>audios/ambiente-espacial.wav</code>) y subiste toda la carpeta junta, el navegador busca la subcarpeta <code>audios/</code> justo al lado de <code>index.html</code> y reproduce la canción sin fallar.
+        `;
+      }
+    }
+
+    /* =========================================================================
+       TAB 3: SIMULADOR DE WHATSAPP (file:// vs http:// vs https://)
+       ========================================================================= */
+    function simularWhatsApp(modo) {
+      const chat = document.getElementById('wa-chat');
+      if (modo === 'file') {
+        playErrorBuzz();
+        chat.innerHTML = `
+          <div class="bubble sent">¡Amiga mirá el cuento que hice! 😍<br><u>file:///C:/Users/MiCompu/Escritorio/cuento.html</u></div>
+          <div class="bubble reply-err">
+            <strong>❌ No me abre 😭 Me sale: ERR_FILE_NOT_FOUND</strong><br><br>
+            <em>¿Por qué pasó?</em> Porque <code>file:///</code> le ordena al celular de tu amiga que busque adentro de SU propio teléfono un disco <code>C:/Users/MiCompu</code>... ¡que solo existe en tu computadora!
+          </div>
+        `;
+      } else if (modo === 'local') {
+        playTone(520, 0.16, 'triangle');
+        playTone(620, 0.2, 'triangle', 0.12);
+        chat.innerHTML = `
+          <div class="bubble sent">Probá este servidor local de mi PC:<br><u>http://192.168.1.35:8000/</u></div>
+          <div class="bubble" style="background:rgba(56,189,248,0.18); border:1px solid #38bdf8;">
+            <strong>⚠️ "Si estoy en tu casa con tu mismo Wi-Fi me abre... ¡pero me fui a mi casa con 5G y dejó de andar!"</strong><br><br>
+            <em>¿Por qué pasó?</em> Tu PC actuó como servidor local en tu red Wi-Fi, pero no está abierta al resto del planeta ni prendida las 24 hs.
+          </div>
+        `;
+      } else {
+        playFanfare();
+        chat.innerHTML = `
+          <div class="bubble sent">¡Ahora sí lo subí a un servidor! 🚀<br><u>https://mis-cuentos.netlify.app</u></div>
+          <div class="bubble reply-ok">
+            <strong>✅ ¡¡¡ME ABRIÓ RE RÁPIDO CON MÚSICA Y FOTOS!!! 🤩🎶</strong><br><br>
+            <em>¿Por qué funcionó?</em> Porque ahora tus archivos viven en un <strong>Servidor Público 24/7</strong> con su propia dirección <strong>URL (https://)</strong> accesible desde cualquier celular del mundo.
+          </div>
+        `;
+      }
+    }
+
+    /* =========================================================================
+       TAB 4: DESARMADOR DE URLS Y ANIMACIÓN DEL SERVIDOR
+       ========================================================================= */
+    function actualizarSubdominio() {
+      const val = document.getElementById('custom-sub').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-') || 'mi-web';
+      document.getElementById('url-sub-view').textContent = val;
+    }
+
+    function explicarURL(parte) {
+      const box = document.getElementById('url-explicacion');
+      const map = {
+        proto: {
+          note: 523.25,
+          title: '🔒 Protocolo: https://',
+          desc: 'Es el idioma en que hablan tu navegador y el servidor. La "S" final significa Seguro (tiene candadito encriptado para que nadie modifique la página en el camino). ¡Ya no dice file://!'
+        },
+        sub: {
+          note: 659.25,
+          title: '✨ Subdominio (Tu Nombre Único)',
+          desc: 'Es el nombre personalizado que vos elegís gratis dentro del servidor para identificar TU proyecto (sin espacios ni tildes, usando guiones).'
+        },
+        dom: {
+          note: 783.99,
+          title: '🏢 Dominio del Servidor (.netlify.app / .github.io)',
+          desc: 'Indica en qué empresa o plataforma de servidores vive alojada tu carpeta gratis (igual que .com o .com.ar si algún día comprás un dominio propio).'
+        },
+        path: {
+          note: 987.77,
+          title: '📄 Ruta al Archivo (/cuento-estelar.html)',
+          desc: 'Le dice al servidor exactamente qué archivo abrir adentro de tu carpeta. Si no ponés nada al final (/), el servidor entrega automáticamente tu index.html.'
+        }
+      };
+      const item = map[parte];
+      playTone(item.note, 0.22, 'triangle');
+      box.innerHTML = `<strong style="color:#f472b6; font-size:1.05rem;">${item.title}</strong><br>${item.desc}`;
+    }
+
+    function simularViajeServidor() {
+      const freqs = [440, 554.37, 659.25, 880];
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('st-' + i).classList.remove('lit');
+      }
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          document.getElementById('st-' + i).classList.add('lit');
+          playTone(freqs[i], 0.22, 'triangle');
+        }, i * 550);
+      }
+    }
+
+    /* =========================================================================
+       TAB 5: MISIONES Y CONFETI DE LANZAMIENTO
+       ========================================================================= */
+    function checkMision(labelEl) {
+      setTimeout(() => {
+        const chk = labelEl.querySelector('input');
+        labelEl.classList.toggle('done', chk.checked);
+        if (chk.checked) playChimeOk();
+      }, 10);
+    }
+
+    function celebrarLanzamiento() {
+      let url = document.getElementById('mi-nueva-url').value.trim();
+      if (!url) {
+        url = 'https://app.netlify.com/drop';
+      } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+
+      document.getElementById('btn-abrir-real').href = url;
+      const textoWa = encodeURIComponent('¡Mirá la página web interactiva que programé y subí a Internet hoy! 🚀✨ ' + url);
+      document.getElementById('btn-wa-real').href = 'https://wa.me/?text=' + textoWa;
+      document.getElementById('panel-celebracion').style.display = 'block';
+
+      playFanfare();
+      lanzarConfeti();
+    }
+
+    function lanzarConfeti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const colors = ['#ec4899', '#8b5cf6', '#38bdf8', '#10b981', '#fde047'];
+      const pieces = Array.from({ length: 110 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * 200,
+        size: 6 + Math.random() * 7,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vy: 2.8 + Math.random() * 4.2,
+        vx: -2 + Math.random() * 4,
+        rot: Math.random() * Math.PI
+      }));
+
+      let frames = 0;
+      function frame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += 0.08;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+        frames++;
+        if (frames < 190) requestAnimationFrame(frame);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      frame();
+    }
+
+    // Inicializar al abrir
+    detectarProtocoloActual();
+    actualizarRayosX();
+  </script>
+</body>
+</html>

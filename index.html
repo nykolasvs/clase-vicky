@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ El Viaje de una Web: De la Compu de Vicky a Internet 🌍</title>
+  <style>
+    :root {
+      --bg-dark: #0d0b1e;
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.15);
+      --pink: #f472b6;
+      --purple: #a855f7;
+      --cyan: #38bdf8;
+      --green: #10b981;
+      --amber: #fbbf24;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 15%, #2e1065 0%, var(--bg-dark) 50%),
+                  radial-gradient(circle at 85% 80%, #0c4a6e 0%, var(--bg-dark) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 70px;
+      line-height: 1.6;
+    }
+
+    .contenedor { max-width: 940px; margin: 0 auto; position: relative; z-index: 2; }
+
+    /* Detector Mágico Superior */
+    .estado-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 22px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      background: rgba(251, 191, 36, 0.14);
+      border: 2px solid var(--amber);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+    }
+
+    .estado-banner.online {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: var(--green);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+    }
+
+    .url-actual-pill {
+      font-family: Consolas, monospace;
+      font-size: 0.85rem;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 6px 12px;
+      border-radius: 10px;
+      color: var(--cyan);
+      word-break: break-all;
+    }
+
+    /* Encabezado Hero */
+    .hero {
+      text-align: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 32px 24px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .hero img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      background: linear-gradient(90deg, #ffffff, var(--pink), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Tarjetas de los 4 Pasos */
+    .paso-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .paso-numero {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .paso-card h2 {
+      font-size: 1.55rem;
+      margin-bottom: 10px;
+    }
+
+    .explicacion-simple {
+      font-size: 1.05rem;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    /* Diagramas visuales para chicos */
+    .flujo-visual {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .mini-caja {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mini-caja:hover {
+      transform: translateY(-4px);
+      border-color: var(--pink);
+    }
+
+    .mini-caja .icono {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .mini-caja strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .mini-caja p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Botones interactivos */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 20px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      box-shadow: 0 8px 20px rgba(244, 114, 182, 0.28);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover { transform: scale(1.03); opacity: 0.95; }
+    .btn-cyan { background: linear-gradient(135deg, #0ea5e9, #6366f1); box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25); }
+    .btn-green { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); }
+    .btn-outline { background: rgba(255,255,255,0.09); border: 1px solid var(--border); box-shadow: none; }
+
+    /* Caja respuesta interactiva */
+    .respuesta-box {
+      margin-top: 16px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--cyan);
+      display: none;
+      animation: aparecer 0.25s ease;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Desarmador de URL */
+    .url-juguete {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      background: #070612;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      margin: 14px 0;
+    }
+
+    .pieza-url {
+      font-family: Consolas, monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .pieza-url:hover { transform: scale(1.07); }
+    .u-1 { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 2px solid #10b981; }
+    .u-2 { background: rgba(244, 114, 182, 0.22); color: #f472b6; border: 2px solid #ec4899; }
+    .u-3 { background: rgba(168, 85, 247, 0.22); color: #c084fc; border: 2px solid #a855f7; }
+    .u-4 { background: rgba(56, 189, 248, 0.22); color: #38bdf8; border: 2px solid #38bdf8; }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 12px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 30px;
+    }
+
+    #confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+
+  <div class="contenedor">
+
+    <!-- 🚦 DETECTOR MÁGICO: Cambia solo cuando lo suben a Netlify -->
+    <div class="estado-banner" id="banner-estado">
+      <div>
+        <div id="titulo-estado" style="font-weight: 800; font-size: 1.08rem;">
+          🟠 MODO ACTUAL: Viendo el archivo desde la Compu (file://)
+        </div>
+        <div id="sub-estado" style="font-size: 0.9rem; color: var(--muted);">
+          Todavía vive solo en este disco rígido. ¡Cuando lo subamos a Netlify este cartel se pondrá verde!
+        </div>
+      </div>
+      <div class="url-actual-pill" id="mi-direccion"></div>
+    </div>
+
+    <!-- 🌟 PORTADA -->
+    <header class="hero">
+      <img src="imagenes/portada-galaxia.svg" alt="Universo Digital de Vicky">
+      <h1>✨ De la Compu de Vicky a Todo el Mundo 🌍</h1>
+      <p>
+        ¿Cómo hace una página web que creamos en la computadora para llegar al celular de cualquier persona en el planeta? ¡Descubrilo en 4 pasos súper simples!
+      </p>
+    </header>
+
+    <!-- =====================================================================
+         PASO 1: EL HTML EN TU PC Y EL NAVEGADOR
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="paso-numero">Paso 1 • En tu Computadora</span>
+      <h2>📄 ¿Qué es un archivo HTML y qué hace el Navegador?</h2>
+      <p class="explicacion-simple">
+        Cuando creamos una página en la compu, guardamos un archivo de texto llamado <strong><code>index.html</code></strong>. Ese archivo es como la <strong>receta de una torta o el guion de una película</strong>: tiene escrito qué títulos, colores, fotos y sonidos van en pantalla.
+      </p>
+
+      <div class="flujo-visual">
+        <div class="mini-caja">
+          <span class="icono">📝</span>
+          <strong>1. El Archivo (.html)</strong>
+          <p>Es texto con etiquetas como <code>&lt;h1&gt;</code>, <code>&lt;img&gt;</code> o <code>&lt;audio&gt;</code>.</p>
+        </div>
+        <div class="mini-caja">
+          <span class="icono">🌐</span>
+          <strong>2. El Navegador (Chrome)</strong>
+          <p>Es el traductor mágico: lee el código y dibuja los botones y colores.</p>
+        </div>
+        <div class="mini-caja">
+          <span class="icono">💻</span>
+          <strong>3. Modo <code>file://</code></strong>
+          <p>Al abrirlo con doble clic, solo se ve en TU compu porque está en tu disco <code>C:</code>.</p>
+        </div>
+      </div>
+
+      <button class="btn" onclick="mostrarWhatsApp()">
+        📲 ¿Qué pasa si le mando mi link "file://" a una amiga por WhatsApp?
+      </button>
+
+      <div class="respuesta-box" id="box-whatsapp">
+        <strong style="color: #f87171; font-size: 1.05rem;">❌ ¡No le va a abrir! (Error: Archivo no encontrado)</strong>
+        <p style="margin-top: 6px; color: #e2e8f0;">
+          Cuando el link empieza con <code>file:///C:/Users/.../Vicky/index.html</code>, le está diciendo al celular de tu amiga: <em>"Buscá adentro de tu propio teléfono la carpeta C:/Users..."</em>. ¡Como el celular de ella no tiene el disco de tu compu, necesitamos subirlo a un <strong>Servidor en Internet</strong>!
+        </p>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 2: LA CARPETA CON VÍNCULOS, IMÁGENES Y AUDIOS
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="paso-numero">Paso 2 • Armando la Valija</span>
+      <h2>🧳 Vínculos, Imágenes y Música: ¡Todo viaja junto!</h2>
+      <p class="explicacion-simple">
+        Tu página principal siempre se llama <strong><code>index.html</code></strong> (es la puerta de entrada). Adentro de la misma carpeta <strong><code>Vicky</code></strong> guardamos las imágenes, los audios de Suno y las demás páginas conectadas con <strong>vínculos (<code>&lt;a href="..."&gt;</code>)</strong>:
+      </p>
+
+      <div class="flujo-visual">
+        <!-- Audio en vivo -->
+        <div class="mini-caja" style="text-align: left;">
+          <span class="icono">🎧</span>
+          <strong>Audio en nuestra carpeta</strong>
+          <p>Guardado en <code>audios/ambiente-espacial.wav</code>:</p>
+          <audio controls src="audios/ambiente-espacial.wav"></audio>
+        </div>
+
+        <!-- Vínculo a Cuento Interactivo -->
+        <div class="mini-caja" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <span class="icono">🚀</span>
+            <strong>Vínculo a otra página</strong>
+            <p style="margin-bottom: 12px;">Tocá para saltar al archivo <code>cuento-estelar.html</code>:</p>
+          </div>
+          <a class="btn btn-cyan" href="cuento-estelar.html" style="justify-content:center;">Abrir Cuento ➔</a>
+        </div>
+
+        <!-- Vínculo al Laboratorio y Práctica JS -->
+        <div class="mini-caja" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <span class="icono">🧪</span>
+            <strong>Más páginas en tu carpeta</strong>
+            <p style="margin-bottom: 12px;">El navegador salta de un archivo HTML a otro:</p>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a class="btn btn-outline" href="laboratorio.html" style="justify-content:center; padding:8px;">🔬 Laboratorio Web</a>
+            <a class="btn btn-outline" href="practica-js-vicky.html" style="justify-content:center; padding:8px;">💻 Mi Práctica JS</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 3: QUÉ ES UN SERVIDOR Y UNA URL
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="paso-numero">Paso 3 • El Secreto de Internet</span>
+      <h2>☁️ ¿Qué es un Servidor y qué significa una URL?</h2>
+      <p class="explicacion-simple">
+        Un <strong>Servidor</strong> es simplemente una computadora súper rápida que está <strong>prendida las 24 horas del día</strong> conectada a Internet. Cuando subimos tu carpeta a un servidor gratuito como <strong>Netlify</strong>, nos dan una <strong>URL</strong> (la dirección única de tu casa en Internet).
+      </p>
+
+      <p style="text-align:center; color: var(--amber); font-weight: 700; margin-bottom: 8px;">
+        👇 ¡Tocá cada bloque de color para escuchar y descubrir qué significa cada parte de una URL!
+      </p>
+
+      <div class="url-juguete">
+        <span class="pieza-url u-1" onclick="explicarPieza(1)">https://</span>
+        <span class="pieza-url u-2" onclick="explicarPieza(2)">mundo-de-vicky</span>
+        <span class="pieza-url u-3" onclick="explicarPieza(3)">.netlify.app</span>
+        <span class="pieza-url u-4" onclick="explicarPieza(4)">/cuento-estelar.html</span>
+      </div>
+
+      <div class="respuesta-box" id="box-url" style="display:block;">
+        👆 <strong>Hacé clic en cualquiera de las 4 partes de arriba</strong> para desarmar la dirección web.
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 4: DE LA COMPU A NETLIFY Y A TODO EL PLANETA
+         ===================================================================== -->
+    <section class="paso-card" style="border-color: var(--pink);">
+      <span class="paso-numero">Paso 4 • ¡Despegue Mundial!</span>
+      <h2>🚀 Cómo subimos nuestra carpeta a Netlify en 10 segundos</h2>
+      <p class="explicacion-simple">
+        Así pasa tu creación de estar guardada en el Escritorio a verse en cualquier celular del mundo:
+      </p>
+
+      <div class="flujo-visual">
+        <div class="mini-caja">
+          <span class="icono">📂</span>
+          <strong>1. Carpeta "Vicky"</strong>
+          <p>Tenemos esta carpeta en el Escritorio con <code>index.html</code>, los audios y las imágenes.</p>
+        </div>
+        <div class="mini-caja">
+          <span class="icono">🖱️</span>
+          <strong>2. Arrastrar a Netlify</strong>
+          <p>Entramos a <strong>app.netlify.com/drop</strong> y soltamos la carpeta entera en la página.</p>
+        </div>
+        <div class="mini-caja">
+          <span class="icono">🌍</span>
+          <strong>3. ¡Ya está en Internet!</strong>
+          <p>El servidor de Netlify la publica al instante con tu propia URL <code>https://...</code></p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top: 20px;">
+        <a class="btn" href="https://app.netlify.com/drop" target="_blank">
+          ☁️ 1. Abrir Netlify Drop para subirla ↗
+        </a>
+        <button class="btn btn-green" onclick="festejarConConfeti()">
+          🎉 2. ¡Tirar Confeti y Festejar!
+        </button>
+        <button class="btn btn-outline" onclick="compartirPorWhatsApp()">
+          📲 3. Compartir esta URL por WhatsApp
+        </button>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         BONUS ESPECIAL: GENERADOR DE PORTADA PARA LA COMPU DE VICKY
+         ===================================================================== -->
+    <section class="paso-card" style="border: 2px solid var(--cyan); background: rgba(14, 165, 233, 0.09);">
+      <span class="paso-numero" style="background: linear-gradient(135deg, #0ea5e9, #10b981);">🎁 Para hacer en la Compu de Vicky</span>
+      <h2>🎮📖 ¡Uní tus Cuentos Interactivos y tu Juego en una sola Web!</h2>
+      <p class="explicacion-simple">
+        Como vos tenés los archivos <code>.html</code> de tus <strong>cuentos</strong> y de tu <strong>juego</strong> en tu propia compu, escribí acá abajo cómo se llaman esos archivos. ¡Esta página te va a crear y descargar tu propio archivo <strong><code>index.html</code></strong> con los vínculos listos para que subas toda tu carpeta junta a Netlify!
+      </p>
+
+      <div class="flujo-visual" style="text-align:left;">
+        <div class="mini-caja" style="text-align:left;">
+          <label style="font-size:0.85rem; color:var(--cyan); font-weight:700;">1. Título de tu Página Web:</label>
+          <input id="gen-titulo" type="text" value="El Mundo de Juegos y Cuentos de Vicky" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff;">
+        </div>
+
+        <div class="mini-caja" style="text-align:left;">
+          <label style="font-size:0.85rem; color:var(--pink); font-weight:700;">2. Archivo de tu Cuento (en tu PC):</label>
+          <input id="gen-cuento" type="text" value="cuento.html" placeholder="Ej: cuento.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+        </div>
+
+        <div class="mini-caja" style="text-align:left;">
+          <label style="font-size:0.85rem; color:var(--amber); font-weight:700;">3. Archivo de tu Juego (en tu PC):</label>
+          <input id="gen-juego" type="text" value="juego.html" placeholder="Ej: juego.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
+        </div>
+      </div>
+
+      <div style="background: rgba(0,0,0,0.35); padding: 16px; border-radius: 16px; margin-bottom: 18px; font-size: 0.95rem;">
+        <strong>📋 Pasos en la compu de Vicky:</strong>
+        <ol style="margin-left: 20px; margin-top: 8px; color: #e2e8f0;">
+          <li>Creá una carpeta nueva en tu Escritorio (por ejemplo <code>Web-Vicky</code>).</li>
+          <li>Meté adentro de esa carpeta el archivo <code>.html</code> de tu <strong>cuento</strong> y el <code>.html</code> de tu <strong>juego</strong> (más las imágenes o audios si tienen).</li>
+          <li>Tocá el botón de abajo para descargar tu <strong><code>index.html</code></strong> principal y guardalo adentro de esa misma carpeta <code>Web-Vicky</code>.</li>
+          <li>Arrastrá tu carpeta <code>Web-Vicky</code> a <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--cyan); font-weight:700;">app.netlify.com/drop</a> ¡y tu juego y tu cuento quedan publicados en Internet!</li>
+        </ol>
+      </div>
+
+      <button class="btn btn-cyan" onclick="descargarPortadaVicky()">
+        ⬇️ Descargar mi "index.html" listo para unir mi Cuento y mi Juego
+      </button>
+    </section>
+
+    <footer>
+      Hecho con ❤️ en clase de tecnología | Carpeta del proyecto: <code>Escritorio/Vicky</code>
+    </footer>
+
+  </div>
+
+  <script>
+    // Sonidos musicales suaves generados en el navegador
+    let ctx = null;
+    function sonarNota(freq, dur = 0.2, delay = 0) {
+      try {
+        if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + dur + 0.02);
+      } catch (e) {}
+    }
+
+    function mostrarWhatsApp() {
+      sonarNota(220, 0.18, 0);
+      sonarNota(175, 0.25, 0.14);
+      document.getElementById('box-whatsapp').style.display = 'block';
+    }
+
+    function explicarPieza(num) {
+      const box = document.getElementById('box-url');
+      const Textos = {
+        1: {
+          nota: 523.25,
+          titulo: '🔒 1. Protocolo Seguro (https://)',
+          desc: 'Le dice al navegador que ya NO busque en tu disco rígido (file://), sino que pida la página por Internet con candadito de seguridad.'
+        },
+        2: {
+          nota: 659.25,
+          titulo: '✨ 2. Tu Nombre en Internet (mundo-de-vicky)',
+          desc: 'Es el nombre único que vos elegís para tu proyecto (sin espacios, usando guiones).'
+        },
+        3: {
+          nota: 783.99,
+          titulo: '☁️ 3. El Servidor que te aloja (.netlify.app)',
+          desc: 'Es el apellido del servidor gratuito donde vive guardada tu carpeta las 24 horas.'
+        },
+        4: {
+          nota: 1046.50,
+          titulo: '📄 4. El Archivo que estás abriendo (/cuento-estelar.html)',
+          desc: 'Indica qué página de tu carpeta querés ver. Si no escribís nada al final, el servidor abre automáticamente tu index.html.'
+        }
+      };
+      const item = Textos[num];
+      sonarNota(item.nota, 0.25, 0);
+      box.innerHTML = `<strong style="color: #f472b6; font-size: 1.08rem;">${item.titulo}</strong><p style="margin-top:5px; color:#e2e8f0;">${item.desc}</p>`;
+    }
+
+    function festejarConConfeti() {
+      [523.25, 659.25, 783.99, 1046.50].forEach((n, i) => sonarNota(n, 0.3, i * 0.11));
+      const canvas = document.getElementById('confetti');
+      const c = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const colores = ['#f472b6', '#a855f7', '#38bdf8', '#10b981', '#fbbf24'];
+      const piezas = Array.from({ length: 120 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * 180,
+        tam: 7 + Math.random() * 7,
+        col: colores[Math.floor(Math.random() * colores.length)],
+        vy: 3 + Math.random() * 4,
+        vx: -2 + Math.random() * 4,
+        rot: Math.random() * Math.PI
+      }));
+      let f = 0;
+      function animar() {
+        c.clearRect(0, 0, canvas.width, canvas.height);
+        piezas.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += 0.08;
+          c.save();
+          c.translate(p.x, p.y);
+          c.rotate(p.rot);
+          c.fillStyle = p.col;
+          c.fillRect(-p.tam / 2, -p.tam / 2, p.tam, p.tam);
+          c.restore();
+        });
+        if (++f < 190) requestAnimationFrame(animar);
+        else c.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animar();
+    }
+
+    function compartirPorWhatsApp() {
+      const url = window.location.href;
+      const msg = encodeURIComponent('¡Mirá la página web que hicimos y subimos a Internet! 🚀✨ ' + url);
+      window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+
+    function descargarPortadaVicky() {
+      const titulo = document.getElementById('gen-titulo').value.trim() || 'El Portal de Vicky';
+      let archivoCuento = document.getElementById('gen-cuento').value.trim() || 'cuento.html';
+      let archivoJuego = document.getElementById('gen-juego').value.trim() || 'juego.html';
+      if (!archivoCuento.endsWith('.html')) archivoCuento += '.html';
+      if (!archivoJuego.endsWith('.html')) archivoJuego += '.html';
+
+      const htmlGenerado = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${titulo}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(circle at top, #3b0764, #0f172a 70%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .portal {
+      max-width: 720px;
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 28px;
+      padding: 36px 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #fff, #f472b6, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub { color: #cbd5e1; margin-bottom: 28px; font-size: 1.1rem; }
+    .tarjetas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 24px;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-5px); border-color: #f472b6; }
+    .icono { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .btn {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 12px 22px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    }
+    .btn-juego { background: linear-gradient(135deg, #0ea5e9, #10b981); }
+  </style>
+</head>
+<body>
+  <main class="portal">
+    <h1>✨ ${titulo} ✨</h1>
+    <p class="sub">¡Bienvenidos a mi sitio web oficial en Internet! Elegí una aventura:</p>
+    <div class="tarjetas">
+      <div class="card">
+        <span class="icono">📖</span>
+        <h2>Mi Cuento Interactivo</h2>
+        <p style="color:#cbd5e1; font-size:0.92rem; margin-top:6px;">Entrá a leer y elegir tu propio camino en la historia.</p>
+        <a class="btn" href="${archivoCuento}">Abrir Cuento ➔</a>
+      </div>
+      <div class="card">
+        <span class="icono">🎮</span>
+        <h2>Mi Videojuego</h2>
+        <p style="color:#cbd5e1; font-size:0.92rem; margin-top:6px;">Jugá directamente desde el navegador de tu compu o celular.</p>
+        <a class="btn btn-juego" href="${archivoJuego}">Jugar Ahora ➔</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`;
+
+      const blob = new Blob([htmlGenerado], { type: 'text/html;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'index.html';
+      link.click();
+      festejarConConfeti();
+    }
+
+    // Detector automático de si está en la PC (file://) o ya subida a Netlify (https://)
+    window.addEventListener('DOMContentLoaded', () => {
+      const proto = window.location.protocol;
+      const host = window.location.hostname;
+      const banner = document.getElementById('banner-estado');
+      const titulo = document.getElementById('titulo-estado');
+      const sub = document.getElementById('sub-estado');
+      document.getElementById('mi-direccion').textContent = window.location.href;
+
+      if (proto === 'https:' || (proto === 'http:' && host !== 'localhost' && host !== '127.0.0.1')) {
+        banner.classList.add('online');
+        titulo.innerHTML = '🟢 ¡LO LOGRASTE VICKY! Ya estás viendo esta página EN VIVO desde Internet (' + proto + '//)';
+        sub.innerHTML = 'Esta página está siendo enviada desde un Servidor en la nube y cualquier persona del mundo puede verla.';
+        setTimeout(festejarConConfeti, 400);
+      } else if (proto === 'http:') {
+        banner.style.borderColor = '#38bdf8';
+        banner.style.background = 'rgba(56, 189, 248, 0.16)';
+        titulo.innerHTML = '🔵 MODO SERVIDOR LOCAL (http://localhost)';
+        sub.innerHTML = 'Tu computadora está actuando como servidor de prueba antes de subirlo a Netlify.';
+      }
+    });
+  </script>
+</body>
+</html>

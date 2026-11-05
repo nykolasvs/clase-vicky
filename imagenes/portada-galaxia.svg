@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0c29"/>
+      <stop offset="50%" stop-color="#302b63"/>
+      <stop offset="100%" stop-color="#24243e"/>
+    </linearGradient>
+    <radialGradient id="portalGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6ec7" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#7c3aed" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#302b63" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="planetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" rx="24" fill="url(#bg)"/>
+  <!-- Stars -->
+  <circle cx="95" cy="70" r="2.2" fill="#ffffff" opacity="0.9"/>
+  <circle cx="180" cy="130" r="1.5" fill="#fbcfe8" opacity="0.7"/>
+  <circle cx="260" cy="55" r="2.5" fill="#bae6fd" opacity="0.9"/>
+  <circle cx="620" cy="80" r="2" fill="#ffffff" opacity="0.85"/>
+  <circle cx="710" cy="145" r="2.8" fill="#fde68a" opacity="0.9"/>
+  <circle cx="680" cy="310" r="1.8" fill="#ffffff" opacity="0.7"/>
+  <circle cx="130" cy="320" r="2.2" fill="#c4b5fd" opacity="0.8"/>
+  <circle cx="520" cy="360" r="1.6" fill="#ffffff" opacity="0.75"/>
+  <!-- Portal Glow -->
+  <circle cx="400" cy="200" r="165" fill="url(#portalGlow)"/>
+  <!-- Concentric rings -->
+  <ellipse cx="400" cy="210" rx="195" ry="58" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="10 6" opacity="0.75" transform="rotate(-14 400 210)"/>
+  <ellipse cx="400" cy="210" rx="150" ry="42" fill="none" stroke="#f472b6" stroke-width="2" opacity="0.85" transform="rotate(-14 400 210)"/>
+  <!-- Central Planet -->
+  <circle cx="400" cy="200" r="74" fill="url(#planetGrad)"/>
+  <circle cx="378" cy="176" r="20" fill="#ffffff" opacity="0.18"/>
+  <!-- Floating Moon -->
+  <circle cx="555" cy="120" r="18" fill="#fde047" opacity="0.9"/>
+  <!-- Title Banner -->
+  <rect x="215" y="332" width="370" height="46" rx="23" fill="#0f172a" fill-opacity="0.72" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="400" y="361" font-family="Segoe UI, system-ui, sans-serif" font-size="18" font-weight="700" fill="#f8fafc" text-anchor="middle" letter-spacing="1.5">✨ MI UNIVERSO DIGITAL ✨</text>
+</svg>
