@@ -432,9 +432,17 @@
         </div>
       </div>
 
+      <div style="background:#070612; border:1px dashed var(--cyan); border-radius:16px; padding:16px 20px; margin: 18px 0; font-family:Consolas,monospace; font-size:0.92rem;">
+        <div style="color:var(--amber); font-weight:700; margin-bottom:6px;">✅ Regla de Oro: Siempre se sube la CARPETA entera (no un archivo suelto)</div>
+        📂 <strong style="color:#fff;">Mi-Proyecto-Vicky/</strong> &nbsp;<span style="color:#94a3b8;">← Arrastrás toda la carpeta junta a Netlify</span><br>
+        &nbsp;&nbsp;├── 📄 <strong style="color:#10b981;">index.html</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">← Tu juego o cuento principal (en minúscula)</span><br>
+        &nbsp;&nbsp;├── 🖼️ <strong style="color:#38bdf8;">imagen.png</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#94a3b8;">← Tus dibujos / imágenes de IA</span><br>
+        &nbsp;&nbsp;└── 🎵 <strong style="color:#f472b6;">musica-suno.mp3</strong> &nbsp;<span style="color:#94a3b8;">← Tus audios y canciones</span>
+      </div>
+
       <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top: 20px;">
-        <a class="btn" href="https://app.netlify.com/drop" target="_blank">
-          ☁️ 1. Abrir Netlify Drop para subirla ↗
+        <a class="btn" href="https://app.netlify.com" target="_blank">
+          ☁️ 1. Abrir Netlify para subir la carpeta ↗
         </a>
         <button class="btn btn-green" onclick="festejarConConfeti()">
           🎉 2. ¡Tirar Confeti y Festejar!
@@ -443,67 +451,6 @@
           📲 3. Compartir esta URL por WhatsApp
         </button>
       </div>
-    </section>
-
-    <!-- =====================================================================
-         BONUS ESPECIAL: GENERADOR DE PORTADA PARA LA COMPU DE VICKY
-         ===================================================================== -->
-    <section class="paso-card" style="border: 2px solid var(--cyan); background: rgba(14, 165, 233, 0.09);">
-      <span class="paso-numero" style="background: linear-gradient(135deg, #0ea5e9, #10b981);">🎁 Para hacer en la Compu de Vicky</span>
-      <h2>🎮📖 ¡Uní tus Cuentos Interactivos y tu Juego en una sola Web!</h2>
-      <p class="explicacion-simple">
-        Como vos tenés los archivos <code>.html</code> de tus <strong>cuentos</strong> y de tu <strong>juego</strong> en tu propia compu, escribí acá abajo cómo se llaman esos archivos. ¡Esta página te va a crear y descargar tu propio archivo <strong><code>index.html</code></strong> con los vínculos listos para que subas toda tu carpeta junta a Netlify!
-      </p>
-
-      <div class="flujo-visual" style="text-align:left;">
-        <div class="mini-caja" style="text-align:left;">
-          <label style="font-size:0.85rem; color:var(--cyan); font-weight:700;">1. Título de tu Página Web:</label>
-          <input id="gen-titulo" type="text" value="El Mundo de Juegos y Cuentos de Vicky" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff;">
-        </div>
-
-        <div class="mini-caja" style="text-align:left;">
-          <label style="font-size:0.85rem; color:var(--pink); font-weight:700;">2. Archivo de tu Cuento (en tu PC):</label>
-          <input id="gen-cuento" type="text" value="cuento.html" placeholder="Ej: cuento.html o cuento/index.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
-          <label style="display:inline-block; margin-top:8px; font-size:0.8rem; color:var(--cyan); cursor:pointer; text-decoration:underline;">
-            📂 O tocá acá para buscar tu archivo .html
-            <input type="file" accept=".html,.htm" style="display:none;" onchange="detectarNombreArchivo(this, 'gen-cuento', 'cuento.html')">
-          </label>
-        </div>
-
-        <div class="mini-caja" style="text-align:left;">
-          <label style="font-size:0.85rem; color:var(--amber); font-weight:700;">3. Archivo de tu Juego (en tu PC):</label>
-          <input id="gen-juego" type="text" value="juego.html" placeholder="Ej: juego.html o juego/index.html" style="width:100%; margin-top:6px; padding:10px; border-radius:10px; border:1px solid var(--border); background:#070612; color:#fff; font-family:Consolas,monospace;">
-          <label style="display:inline-block; margin-top:8px; font-size:0.8rem; color:var(--cyan); cursor:pointer; text-decoration:underline;">
-            📂 O tocá acá para buscar tu archivo .html
-            <input type="file" accept=".html,.htm" style="display:none;" onchange="detectarNombreArchivo(this, 'gen-juego', 'juego.html')">
-          </label>
-        </div>
-      </div>
-
-      <div id="aviso-nombre" style="display:none; background:rgba(251,191,36,0.18); border:1px solid var(--amber); padding:12px 16px; border-radius:12px; margin-bottom:14px; font-size:0.9rem; color:#fef08a;"></div>
-
-      <div style="background: rgba(0,0,0,0.35); padding: 16px; border-radius: 16px; margin-bottom: 18px; font-size: 0.95rem;">
-        <strong>💡 ¿Cómo sabe el <code>index.html</code> dónde están tus archivos sin preguntarte la ruta <code>C:\Users\...</code>?</strong>
-        <p style="color:#cbd5e1; margin: 6px 0 12px; font-size:0.9rem;">
-          ¡Porque usa <strong>Rutas Relativas (de vecinos)</strong>! Mientras pongas los 3 archivos juntos adentro de la <strong>misma carpeta</strong>, el navegador busca automáticamente al archivo de al lado, sin importar en qué compu o servidor del mundo esté esa carpeta:
-        </p>
-        <div style="font-family:Consolas,monospace; background:#070612; padding:12px; border-radius:10px; color:#38bdf8; font-size:0.86rem; margin-bottom:12px;">
-          📂 <strong>Mi-Web-Vicky/</strong> (cualquier carpeta en tu compu)<br>
-          &nbsp;&nbsp;├── 📄 <strong style="color:#10b981;">index.html</strong> &nbsp;&nbsp;&nbsp;← <em>El menú que descargás acá</em><br>
-          &nbsp;&nbsp;├── 📄 <strong style="color:#f472b6;">cuento.html</strong> &nbsp;&nbsp;← <em>Tu cuento al lado</em><br>
-          &nbsp;&nbsp;└── 📄 <strong style="color:#fbbf24;">juego.html</strong> &nbsp;&nbsp;&nbsp;← <em>Tu juego al lado</em>
-        </div>
-        <ol style="margin-left: 20px; margin-top: 8px; color: #e2e8f0;">
-          <li>Creá una carpeta nueva en tu Escritorio (por ejemplo <code>Web-Vicky</code>).</li>
-          <li>Meté adentro de esa carpeta el archivo <code>.html</code> de tu <strong>cuento</strong> y el <code>.html</code> de tu <strong>juego</strong> (más las imágenes o audios si tienen).</li>
-          <li>Tocá el botón de abajo para descargar tu <strong><code>index.html</code></strong> principal y guardalo adentro de esa misma carpeta <code>Web-Vicky</code>.</li>
-          <li>Arrastrá tu carpeta <code>Web-Vicky</code> a <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--cyan); font-weight:700;">app.netlify.com/drop</a> ¡y tu juego y tu cuento quedan publicados en Internet!</li>
-        </ol>
-      </div>
-
-      <button class="btn btn-cyan" onclick="descargarPortadaVicky()">
-        ⬇️ Descargar mi "index.html" listo para unir mi Cuento y mi Juego
-      </button>
     </section>
 
     <footer>
