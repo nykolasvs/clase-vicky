@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧠 Clase 2: Cómo las Páginas Web tienen Memoria y Datos en Vivo</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <!-- Audios reales en nuestra carpeta -->
+  <audio id="snd-moneda" src="audios/moneda-magica.wav"></audio>
+  <audio id="snd-record" src="audios/super-record.wav"></audio>
+
+  <div class="contenedor">
+
+    <!-- 🚦 DETECTOR DE MEMORIA EN VIVO -->
+    <div class="barra-memoria" id="banner-memoria">
+      <div>
+        <div id="titulo-memoria" style="font-weight: 800; font-size: 1.08rem;">
+          🤔 MODO AMNESIA: Esta página todavía no sabe quién sos
+        </div>
+        <div id="sub-memoria" style="font-size: 0.9rem; color: var(--gris);">
+          Si cerrás la pestaña ahora, no recuerda nada. ¡Guardá tu perfil en el Paso 1 y probá tocar F5!
+        </div>
+      </div>
+      <button class="btn btn-borde" onclick="borrarTodaLaMemoria()" style="font-size:0.82rem; padding:8px 12px;">
+        🗑️ Borrar Memoria
+      </button>
+    </div>
+
+    <!-- 🌟 PORTADA -->
+    <header class="hero">
+      <img src="imagenes/cerebro-web.svg" alt="La Memoria de la Web">
+      <h1 id="saludo-principal">🧠 Clase 2: Páginas con Memoria y Conexión al Mundo</h1>
+      <p style="color: var(--gris); max-width: 680px; margin: 0 auto; font-size: 1.05rem;">
+        La clase pasada subimos nuestra web a un servidor en Internet. Hoy vamos a descubrir <strong>cómo hace una página para recordar quién sos, guardar el récord de tu juego y pedir datos en vivo a otros servidores</strong>.
+      </p>
+    </header>
+
+    <!-- =====================================================================
+         PASO 1: POR QUÉ UNA WEB TIENE AMNESIA VS LOCALSTORAGE
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="etiqueta-paso">Paso 1 • El Secreto de la Memoria</span>
+      <h2>🗄️ ¿Por qué se borran los puntos cuando recargás la página?</h2>
+      <p class="texto-guia">
+        Cuando guardás un dato en una variable común de JavaScript (como <code>var puntos = 10</code>), es como escribir en un pizarrón: <strong>cuando tocás Recargar (<code>F5</code>) o cerrás la pestaña, el navegador borra todo y empieza de cero</strong>. Para que NO se borre, los navegadores tienen un cajón secreto llamado <strong><code>localStorage</code></strong>.
+      </p>
+
+      <div class="grilla-2">
+        <!-- Contador SIN memoria -->
+        <div class="caja-interna" style="border-color: var(--rojo);">
+          <strong style="color: #f87171;">🔴 1. Variable Común (Con Amnesia)</strong>
+          <p style="font-size: 0.88rem; color: var(--gris); margin-top: 4px;">
+            Usa <code>let puntos = 0;</code> — Si recargás la página con <code>F5</code>, vuelve a 0.
+          </p>
+          <div class="numero-gigante" id="num-amnesia" style="color: #f87171;">0</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-rojo" onclick="sumarAmnesia()">➕ Sumar 1 Punto</button>
+            <button class="btn btn-borde" onclick="location.reload()">🔄 Recargar Página (F5)</button>
+          </div>
+        </div>
+
+        <!-- Contador CON localStorage -->
+        <div class="caja-interna" style="border-color: var(--verde);">
+          <strong style="color: #34d399;">🟢 2. Guardado en <code>localStorage</code> (Con Memoria)</strong>
+          <p style="font-size: 0.88rem; color: var(--gris); margin-top: 4px;">
+            Usa <code>localStorage.setItem()</code> — ¡Probá sumar monedas y tocar <code>F5</code>!
+          </p>
+          <div class="numero-gigante" id="num-memoria" style="color: #34d399;">0</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-verde" onclick="sumarMemoria()">🪙 Guardar +1 Moneda</button>
+            <button class="btn btn-borde" onclick="location.reload()">🔄 Recargar Página (F5)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personalizador de Perfil en LocalStorage -->
+      <div class="caja-interna" style="margin-top: 18px; border-color: var(--cyan);">
+        <h3 style="margin-bottom: 10px;">✨ Probá guardar tu Perfil en la memoria de este navegador:</h3>
+        <div class="grilla-3">
+          <div>
+            <label style="font-size:0.85rem; color:var(--gris);">Tu Nombre o Apodo:</label>
+            <input type="text" id="inp-nombre" placeholder="Ej: Vicky">
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--gris);">Tu Avatar Favorito:</label>
+            <select id="inp-avatar">
+              <option value="🦋">🦋 Mariposa Neón</option>
+              <option value="🚀">🚀 Astronauta</option>
+              <option value="🎸">🎸 Estrella de Rock</option>
+              <option value="🐱">🐱 Gatito Gamer</option>
+              <option value="⚡">⚡ Rayo Mágico</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--gris);">Color de tu Web:</label>
+            <select id="inp-color">
+              <option value="#ec4899">💖 Rosa Neón</option>
+              <option value="#38bdf8">💎 Cian Eléctrico</option>
+              <option value="#10b981">🍀 Verde Esmeralda</option>
+              <option value="#f59e0b">🌟 Dorado Solar</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" style="margin-top: 14px;" onclick="guardarPerfil()">
+          💾 Guardar mi Perfil en localStorage
+        </button>
+
+        <div class="codigo-box">// 📝 Las 2 únicas líneas de código que hacen esta magia:
+// 1. Para GUARDAR un dato en el navegador:
+localStorage.setItem("jugadora", "Vicky");
+
+// 2. Para LEER ese dato cuando vuelve a abrir la página:
+let nombreGuardado = localStorage.getItem("jugadora");</div>
+      </div>
+
+      <div class="nota-detective">
+        <strong>🕵️‍♀️ Misión Detective en Clase: ¿Dónde guarda Chrome este cajón secreto?</strong><br>
+        1. Apretá <strong><code>F12</code></strong> (o clic derecho ➔ <em>Inspeccionar</em>).<br>
+        2. Arriba en las pestañas del inspector buscá <strong>Application</strong> (o <em>Aplicación / Almacenamiento</em>).<br>
+        3. A la izquierda abrí <strong>Local Storage</strong>. ¡Vas a ver la tablita con tus monedas, tu nombre y tu avatar guardados! (Incluso podés hacer doble clic en tus monedas ahí adentro y ponerte <code>99999</code> como una hacker 😎).
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 2: MOCHILA DE CUENTO Y JUEGO CON RÉCORD COMPARTIDO
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="etiqueta-paso">Paso 2 • Aplicado a Cuentos y Juegos</span>
+      <h2>🎮 ¿Cómo comparten memoria dos páginas HTML distintas?</h2>
+      <p class="texto-guia">
+        Lo más genial de <code>localStorage</code> es que <strong>todas las páginas de tu misma carpeta o URL comparten la misma memoria</strong>. Si elegís tu nombre o encontrás una "Llave Mágica" en tu página principal, ¡cuando saltás al archivo de tu juego o al Capítulo 2 de tu cuento, ya sabe que la tenés!
+      </p>
+
+      <div class="grilla-2">
+        <!-- Mochila de Inventario para Cuentos -->
+        <div class="caja-interna">
+          <h3>🎒 Mochila para tu Cuento Interactivo</h3>
+          <p style="font-size:0.9rem; color:var(--gris); margin: 6px 0 12px;">
+            Tocá objetos para guardarlos en tu mochila antes de ir a otra página:
+          </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+            <button class="btn btn-borde" onclick="toggleItem('🗝️ Llave Astral')">🗝️ Llave Astral</button>
+            <button class="btn btn-borde" onclick="toggleItem('🧪 Poción Musical')">🧪 Poción Musical</button>
+            <button class="btn btn-borde" onclick="toggleItem('🛡️ Escudo Neón')">🛡️ Escudo Neón</button>
+          </div>
+          <div style="background:#05070f; padding:12px; border-radius:10px; font-size:0.92rem;">
+            <strong>Objetos guardados en tu memoria:</strong>
+            <div id="vista-mochila" style="color:var(--cyan); margin-top:4px;">(Mochila vacía)</div>
+          </div>
+        </div>
+
+        <!-- Salto al Mini-Juego con Memoria -->
+        <div class="caja-interna" style="display:flex; flex-direction:column; justify-content:space-between; border-color: var(--acento);">
+          <div>
+            <h3>🚀 ¡Probá el Mini-Juego con Récord!</h3>
+            <p style="font-size:0.9rem; color:var(--gris); margin: 6px 0 14px;">
+              Entrá al archivo vecino <code>juego-con-memoria.html</code>. Vas a ver cómo <strong>te saluda con el nombre y el color que guardaste acá</strong> y cómo recuerda tu Récord Máximo aunque cierres el navegador.
+            </p>
+          </div>
+          <a class="btn" href="juego-con-memoria.html">
+            🕹️ Ir al Juego "Cazadora de Estrellas" ➔
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 3: CONEXIÓN AL MUNDO REAL (FETCH Y APIs)
+         ===================================================================== -->
+    <section class="paso-card">
+      <span class="etiqueta-paso">Paso 3 • Hablando con Otros Servidores</span>
+      <h2>🌍 ¿Qué es una API y cómo pide datos en vivo tu página?</h2>
+      <p class="texto-guia">
+        <code>localStorage</code> guarda cosas en <strong>tu</strong> dispositivo. Pero ¿cómo hace una web para saber cuánto hace de temperatura hoy o traer cosas nuevas de Internet sin que vos las escribas en el HTML? Usa una orden llamada <strong><code>fetch()</code> ("ir a buscar")</strong> para pedirle datos en vivo a otros servidores públicos (llamados <strong>APIs</strong>).
+      </p>
+
+      <div class="grilla-2">
+        <!-- Botón 1: Clima Real en Vivo -->
+        <div class="caja-interna">
+          <h3>🌤️ 1. Consultar Servidor del Clima en Vivo</h3>
+          <p style="font-size:0.88rem; color:var(--gris); margin:6px 0 14px;">
+            Al tocar el botón, tu navegador viaja en medio segundo al servidor meteorológico <em>Open-Meteo</em> y le pide la temperatura actual real:
+          </p>
+          <button class="btn btn-cyan" onclick="pedirClimaReal()">
+            📡 Pedir Clima en Vivo al Servidor
+          </button>
+          <div id="resultado-clima" style="margin-top:14px; padding:12px; border-radius:12px; background:#05070f; font-size:0.92rem; color:var(--gris);">
+            Tocá el botón para hacer el pedido por Internet...
+          </div>
+        </div>
+
+        <!-- Botón 2: Personaje / Mascota desde otro Servidor -->
+        <div class="caja-interna">
+          <h3>🐶 2. Pedir una Foto Aleatoria a otro Servidor</h3>
+          <p style="font-size:0.88rem; color:var(--gris); margin:6px 0 14px;">
+            Esta imagen <strong>NO está en nuestra carpeta</strong>. Cada vez que tocás el botón, <code>fetch()</code> le pide a un servidor de perritos que nos mande la URL de una foto distinta:
+          </p>
+          <button class="btn" onclick="pedirPerritoReal()">
+            🎲 Pedir Foto Nueva a la API
+          </button>
+          <div id="resultado-perrito" style="margin-top:14px; text-align:center; min-height:110px; display:flex; align-items:center; justify-content:center; background:#05070f; border-radius:12px; padding:10px;">
+            <span style="color:var(--gris); font-size:0.9rem;">Acá va a aparecer la foto que mande el servidor...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="codigo-box" id="box-json-vivo">// 📦 Acá vas a ver el paquete de datos (JSON) real que nos contesta el servidor cuando toques uno de los botones de arriba...</div>
+    </section>
+
+    <!-- =====================================================================
+         PASO 4: RESUMEN PARA USAR EN LOS PROYECTOS DE VICKY
+         ===================================================================== -->
+    <section class="paso-card" style="border: 2px solid var(--verde);">
+      <span class="etiqueta-paso" style="background: linear-gradient(135deg, #10b981, #0ea5e9);">Paso 4 • Para hacer hoy con Antigravity</span>
+      <h2>🚀 Ideas para agregarle Memoria al Juego o al Cuento de Vicky</h2>
+      <p class="texto-guia">
+        Ahora que ya sabés cómo funciona, podés abrir tu juego o tu cuento en tu compu y pedirle a Antigravity cualquiera de estos superpoderes (¡y volver a subir la carpeta a Netlify para actualizar tu web a la <strong>Versión 2.0</strong>!):
+      </p>
+
+      <div class="grilla-3">
+        <div class="caja-interna">
+          <strong style="color:var(--ambar);">🏆 1. Récord en tu Juego</strong>
+          <p style="font-size:0.88rem; color:var(--gris); margin-top:6px;">
+            Que el juego guarde en <code>localStorage</code> el puntaje más alto y el nombre del jugador aunque cierre la página.
+          </p>
+        </div>
+        <div class="caja-interna">
+          <strong style="color:var(--cyan);">🔖 2. Guardar Partida del Cuento</strong>
+          <p style="font-size:0.88rem; color:var(--gris); margin-top:6px;">
+            Que el cuento recuerde en qué capítulo te quedaste y qué decisiones tomaste la última vez.
+          </p>
+        </div>
+        <div class="caja-interna">
+          <strong style="color:#f472b6;">🎨 3. Selector de Personaje / Tema</strong>
+          <p style="font-size:0.88rem; color:var(--gris); margin-top:6px;">
+            Que quien entre elija su avatar y colores favoritos y le queden guardados cada vez que visite tu URL.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // 1. Variable común (se borra al recargar)
+    let puntosConAmnesia = 0;
+
+    function sonarMoneda() {
+      const a = document.getElementById('snd-moneda');
+      a.currentTime = 0;
+      a.play().catch(() => {});
+    }
+
+    function sonarRecord() {
+      const a = document.getElementById('snd-record');
+      a.currentTime = 0;
+      a.play().catch(() => {});
+    }
+
+    function sumarAmnesia() {
+      puntosConAmnesia = puntosConAmnesia + 1;
+      document.getElementById('num-amnesia').textContent = puntosConAmnesia;
+    }
+
+    function sumarMemoria() {
+      sonarMoneda();
+      let monedasActuales = Number(localStorage.getItem('vicky_monedas') || 0);
+      monedasActuales = monedasActuales + 1;
+      localStorage.setItem('vicky_monedas', monedasActuales);
+      document.getElementById('num-memoria').textContent = monedasActuales;
+    }
+
+    function guardarPerfil() {
+      const nombre = document.getElementById('inp-nombre').value.trim() || 'Vicky';
+      const avatar = document.getElementById('inp-avatar').value;
+      const color = document.getElementById('inp-color').value;
+
+      localStorage.setItem('vicky_nombre', nombre);
+      localStorage.setItem('vicky_avatar', avatar);
+      localStorage.setItem('vicky_color', color);
+
+      sonarRecord();
+      cargarDatosGuardados();
+    }
+
+    function toggleItem(item) {
+      sonarMoneda();
+      let mochila = JSON.parse(localStorage.getItem('vicky_mochila') || '[]');
+      if (mochila.includes(item)) {
+        mochila = mochila.filter(x => x !== item);
+      } else {
+        mochila.push(item);
+      }
+      localStorage.setItem('vicky_mochila', JSON.stringify(mochila));
+      mostrarMochila();
+    }
+
+    function mostrarMochila() {
+      const mochila = JSON.parse(localStorage.getItem('vicky_mochila') || '[]');
+      const div = document.getElementById('vista-mochila');
+      div.textContent = mochila.length > 0 ? mochila.join('  •  ') : '(Mochila vacía — tocá un objeto arriba)';
+    }
+
+    function cargarDatosGuardados() {
+      // Monedas
+      const monedas = Number(localStorage.getItem('vicky_monedas') || 0);
+      document.getElementById('num-memoria').textContent = monedas;
+
+      // Perfil
+      const nombre = localStorage.getItem('vicky_nombre');
+      const avatar = localStorage.getItem('vicky_avatar') || '🦋';
+      const color = localStorage.getItem('vicky_color') || '#ec4899';
+
+      document.documentElement.style.setProperty('--acento', color);
+
+      if (nombre) {
+        document.getElementById('inp-nombre').value = nombre;
+        document.getElementById('inp-avatar').value = avatar;
+        document.getElementById('inp-color').value = color;
+
+        const banner = document.getElementById('banner-memoria');
+        banner.classList.add('activa');
+        document.getElementById('titulo-memoria').innerHTML = `🧠 ¡MEMORIA ACTIVADA! Hola de nuevo, ${avatar} ${nombre}`;
+        document.getElementById('sub-memoria').innerHTML = `Leído automáticamente desde <code>localStorage</code>. ¡Aunque cierres la pestaña o toques F5, el navegador te recuerda!`;
+        document.getElementById('saludo-principal').textContent = `${avatar} El Laboratorio con Memoria de ${nombre}`;
+      }
+
+      mostrarMochila();
+    }
+
+    function borrarTodaLaMemoria() {
+      localStorage.clear();
+      location.reload();
+    }
+
+    // PASO 3: Pedidos reales a APIs públicas con fetch()
+    async function pedirClimaReal() {
+      const caja = document.getElementById('resultado-clima');
+      const jsonBox = document.getElementById('box-json-vivo');
+      caja.innerHTML = '⏳ Viajando al servidor de Open-Meteo...';
+      try {
+        const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.6037&longitude=-58.3816&current_weather=true');
+        const datos = await resp.json();
+        sonarMoneda();
+        const temp = datos.current_weather.temperature;
+        const viento = datos.current_weather.windspeed;
+        caja.innerHTML = `<strong style="color:#34d399; font-size:1.1rem;">🌡️ Temperatura actual: ${temp} °C</strong><br><span style="color:#cbd5e1;">💨 Viento: ${viento} km/h (Datos traídos en vivo desde otro servidor)</span>`;
+        jsonBox.textContent = '// 📦 Respuesta real en formato JSON que mandó el servidor del clima:\n' + JSON.stringify(datos.current_weather, null, 2);
+      } catch (err) {
+        caja.innerHTML = '⚠️ Necesitás estar conectada a Internet para consultar el servidor del clima.';
+      }
+    }
+
+    async function pedirPerritoReal() {
+      const caja = document.getElementById('resultado-perrito');
+      const jsonBox = document.getElementById('box-json-vivo');
+      caja.innerHTML = '⏳ Pidiendo foto al servidor...';
+      try {
+        const resp = await fetch('https://dog.ceo/api/breeds/image/random');
+        const datos = await resp.json();
+        sonarRecord();
+        caja.innerHTML = `<img src="${datos.message}" alt="Perrito de la API" style="max-height:170px; border-radius:12px; border:2px solid var(--acento);">`;
+        jsonBox.textContent = '// 📦 Respuesta real en formato JSON que mandó el servidor Dog CEO:\n' + JSON.stringify(datos, null, 2);
+      } catch (err) {
+        caja.innerHTML = '⚠️ Necesitás conexión a Internet para pedir la imagen a la API.';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', cargarDatosGuardados);
+  </script>
+</body>
+</html>

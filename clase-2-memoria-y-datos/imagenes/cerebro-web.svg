@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 340" width="840" height="340">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#a855f7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="840" height="340" rx="24" fill="url(#bg2)"/>
+  <!-- Connection lines -->
+  <line x1="190" y1="155" x2="420" y2="155" stroke="#38bdf8" stroke-width="3" stroke-dasharray="8 6"/>
+  <line x1="420" y1="155" x2="650" y2="155" stroke="#f472b6" stroke-width="3" stroke-dasharray="8 6"/>
+  <!-- Left node: Browser LocalStorage -->
+  <circle cx="190" cy="155" r="62" fill="#0f172a" stroke="#38bdf8" stroke-width="3"/>
+  <text x="190" y="148" font-family="Segoe UI, sans-serif" font-size="34" text-anchor="middle">🗄️</text>
+  <text x="190" y="178" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">localStorage</text>
+  <text x="190" y="242" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1" text-anchor="middle">Memoria en tu Compu</text>
+  <!-- Center node: Vicky's Web -->
+  <circle cx="420" cy="155" r="115" fill="url(#coreGlow)"/>
+  <circle cx="420" cy="155" r="74" fill="#1e1b4b" stroke="#a855f7" stroke-width="3.5"/>
+  <text x="420" y="148" font-family="Segoe UI, sans-serif" font-size="40" text-anchor="middle">🧠</text>
+  <text x="420" y="182" font-family="Segoe UI, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">TU PÁGINA WEB</text>
+  <!-- Right node: Live APIs -->
+  <circle cx="650" cy="155" r="62" fill="#0f172a" stroke="#f472b6" stroke-width="3"/>
+  <text x="650" y="148" font-family="Segoe UI, sans-serif" font-size="34" text-anchor="middle">🌍</text>
+  <text x="650" y="178" font-family="Consolas, monospace" font-size="13" font-weight="700" fill="#f472b6" text-anchor="middle">fetch (API)</text>
+  <text x="650" y="242" font-family="Segoe UI, sans-serif" font-size="14" font-weight="600" fill="#cbd5e1" text-anchor="middle">Datos del Mundo en Vivo</text>
+  <!-- Bottom badge -->
+  <rect x="235" y="276" width="370" height="42" rx="21" fill="#090d16" fill-opacity="0.8" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="420" y="302" font-family="Segoe UI, sans-serif" font-size="15" font-weight="700" fill="#f8fafc" text-anchor="middle" letter-spacing="1">✨ CLASE 2: MEMORIA + DATOS EN VIVO ✨</text>
+</svg>

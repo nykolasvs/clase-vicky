@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🕹️ Cazadora de Estrellas - Juego con Memoria</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    .tablero-juego {
+      position: relative;
+      height: 310px;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #05070f 85%);
+      border: 2px solid var(--acento);
+      border-radius: 22px;
+      overflow: hidden;
+      margin: 18px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .estrella-btn {
+      position: absolute;
+      font-size: 2.8rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: transform 0.1s ease;
+      filter: drop-shadow(0 0 12px #fbbf24);
+    }
+
+    .estrella-btn:active { transform: scale(0.8); }
+  </style>
+</head>
+<body>
+
+  <audio id="snd-moneda" src="audios/moneda-magica.wav"></audio>
+  <audio id="snd-record" src="audios/super-record.wav"></audio>
+
+  <div class="contenedor">
+    <div style="margin-bottom: 16px;">
+      <a class="btn btn-borde" href="index.html">⬅ Volver a la Portada de la Clase 2</a>
+    </div>
+
+    <section class="paso-card">
+      <span class="etiqueta-paso">Mini-Juego de Demostración</span>
+      <h1 id="titulo-jugadora" style="font-size: 1.9rem;">🕹️ Cazadora de Estrellas</h1>
+      <p class="texto-guia" id="sub-mochila">
+        ¡Mirá cómo este archivo HTML leyó el nombre, el color y la mochila que guardaste en la página anterior!
+      </p>
+
+      <div class="grilla-3">
+        <div class="caja-interna" style="text-align:center;">
+          <span style="font-size:0.85rem; color:var(--gris);">Puntos de ESTA Partida (Variable común)</span>
+          <div class="numero-gigante" id="pts-actuales" style="color:var(--cyan);">0</div>
+          <small style="color:var(--gris);">Se borra al recargar</small>
+        </div>
+
+        <div class="caja-interna" style="text-align:center; border-color:var(--ambar);">
+          <span style="font-size:0.85rem; color:var(--ambar); font-weight:700;">🏆 RÉCORD GUARDADO (localStorage)</span>
+          <div class="numero-gigante" id="pts-record" style="color:var(--ambar);">0</div>
+          <small style="color:var(--verde);">¡No se borra aunque toques F5!</small>
+        </div>
+
+        <div class="caja-interna" style="text-align:center;">
+          <span style="font-size:0.85rem; color:var(--gris);">⏱️ Tiempo Restante</span>
+          <div class="numero-gigante" id="tiempo">12s</div>
+          <button class="btn" id="btn-jugar" onclick="iniciarPartida()" style="width:100%; padding:8px;">▶ ¡Empezar a Jugar!</button>
+        </div>
+      </div>
+
+      <!-- Zona donde aparecen las estrellas -->
+      <div class="tablero-juego" id="tablero">
+        <div id="mensaje-centro" style="text-align:center; padding:20px;">
+          <div style="font-size:3rem; margin-bottom:8px;">🌟</div>
+          <strong>Tocá "Empezar a Jugar" y atrapá todas las estrellas que puedas en 12 segundos</strong>
+        </div>
+      </div>
+
+      <div class="codigo-box">// 💡 Así podés guardar el Récord en el juego que hiciste en tu compu:
+let recordGuardado = Number(localStorage.getItem("mi_record") || 0);
+
+if (puntosActuales > recordGuardado) {
+    localStorage.setItem("mi_record", puntosActuales); // ¡Guarda el nuevo récord para siempre!
+}</div>
+    </section>
+  </div>
+
+  <script>
+    let puntos = 0;
+    let record = Number(localStorage.getItem('vicky_record_estrellas') || 0);
+    let segundos = 12;
+    let reloj = null;
+    let jugando = false;
+
+    // Al abrir el juego, leemos el perfil y la mochila guardados en index.html
+    window.addEventListener('DOMContentLoaded', () => {
+      const nombre = localStorage.getItem('vicky_nombre') || 'Vicky';
+      const avatar = localStorage.getItem('vicky_avatar') || '🦋';
+      const color = localStorage.getItem('vicky_color') || '#ec4899';
+      const mochila = JSON.parse(localStorage.getItem('vicky_mochila') || '[]');
+
+      document.documentElement.style.setProperty('--acento', color);
+      document.getElementById('titulo-jugadora').textContent = `${avatar} Cazadora de Estrellas • Jugadora: ${nombre}`;
+      document.getElementById('pts-record').textContent = record;
+
+      if (mochila.length > 0) {
+        document.getElementById('sub-mochila').innerHTML = `🎒 <strong>Objetos que trajiste desde la portada en tu memoria:</strong> ${mochila.join(' • ')}`;
+      }
+    });
+
+    function iniciarPartida() {
+      if (jugando) return;
+      jugando = true;
+      puntos = 0;
+      segundos = 12;
+      document.getElementById('pts-actuales').textContent = '0';
+      document.getElementById('tiempo').textContent = segundos + 's';
+      document.getElementById('btn-jugar').textContent = '🔥 ¡Atrapa las estrellas!';
+
+      aparecerEstrella();
+
+      reloj = setInterval(() => {
+        segundos--;
+        document.getElementById('tiempo').textContent = segundos + 's';
+        if (segundos <= 0) {
+          terminarPartida();
+        }
+      }, 1000);
+    }
+
+    function aparecerEstrella() {
+      if (!jugando) return;
+      const tablero = document.getElementById('tablero');
+      tablero.innerHTML = '';
+      const btn = document.createElement('button');
+      btn.className = 'estrella-btn';
+      btn.textContent = Math.random() > 0.25 ? '⭐' : '💎';
+
+      const maxX = Math.max(40, tablero.clientWidth - 70);
+      const maxY = Math.max(40, tablero.clientHeight - 70);
+      btn.style.left = Math.floor(Math.random() * maxX) + 'px';
+      btn.style.top = Math.floor(Math.random() * maxY) + 'px';
+
+      btn.onclick = () => {
+        puntos++;
+        document.getElementById('pts-actuales').textContent = puntos;
+        const snd = document.getElementById('snd-moneda');
+        snd.currentTime = 0;
+        snd.play().catch(() => {});
+
+        if (puntos > record) {
+          record = puntos;
+          localStorage.setItem('vicky_record_estrellas', record);
+          document.getElementById('pts-record').textContent = record;
+        }
+        aparecerEstrella();
+      };
+
+      tablero.appendChild(btn);
+    }
+
+    function terminarPartida() {
+      clearInterval(reloj);
+      jugando = false;
+      const snd = document.getElementById('snd-record');
+      snd.currentTime = 0;
+      snd.play().catch(() => {});
+
+      const tablero = document.getElementById('tablero');
+      tablero.innerHTML = `
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:2.6rem; margin-bottom:8px;">🏆</div>
+          <h3 style="font-size:1.4rem; margin-bottom:6px;">¡Tiempo cumplido! Hiciste ${puntos} puntos</h3>
+          <p style="color:#34d399;">Tu Récord Máximo (${record} pts) quedó guardado en <code>localStorage</code>. ¡Probá apretar F5 y vas a ver que no se borra!</p>
+        </div>
+      `;
+      document.getElementById('btn-jugar').textContent = '🔄 Jugar Otra Vez';
+    }
+  </script>
+</body>
+</html>

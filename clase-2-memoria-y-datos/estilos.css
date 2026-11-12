@@ -1,0 +1,185 @@
+:root {
+  --acento: #ec4899;
+  --secundario: #8b5cf6;
+  --cyan: #38bdf8;
+  --verde: #10b981;
+  --ambar: #fbbf24;
+  --rojo: #ef4444;
+  --fondo: #090b16;
+  --tarjeta: rgba(255, 255, 255, 0.06);
+  --borde: rgba(255, 255, 255, 0.14);
+  --texto: #f8fafc;
+  --gris: #cbd5e1;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.25) 0%, var(--fondo) 50%),
+              radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.18) 0%, var(--fondo) 55%);
+  color: var(--texto);
+  min-height: 100vh;
+  padding: 22px 16px 70px;
+  line-height: 1.6;
+}
+
+.contenedor { max-width: 960px; margin: 0 auto; }
+
+.barra-memoria {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 22px;
+  border-radius: 18px;
+  margin-bottom: 22px;
+  background: rgba(251, 191, 36, 0.13);
+  border: 2px solid var(--ambar);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+.barra-memoria.activa {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: var(--verde);
+  box-shadow: 0 0 28px rgba(16, 185, 129, 0.2);
+}
+
+.hero {
+  text-align: center;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 26px;
+  padding: 28px 22px;
+  margin-bottom: 26px;
+  backdrop-filter: blur(10px);
+}
+
+.hero img {
+  width: 100%;
+  max-height: 230px;
+  object-fit: cover;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  border: 1px solid var(--borde);
+}
+
+h1 {
+  font-size: 2.2rem;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #fff, var(--acento), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.paso-card {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 24px;
+  padding: 26px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.etiqueta-paso {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--acento), var(--secundario));
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.paso-card h2 { font-size: 1.5rem; margin-bottom: 8px; }
+.texto-guia { color: #e2e8f0; font-size: 1.03rem; margin-bottom: 18px; }
+
+.grilla-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 18px;
+}
+
+.grilla-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.caja-interna {
+  background: rgba(0, 0, 0, 0.36);
+  border: 1px solid var(--borde);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.numero-gigante {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 10px 0;
+  font-family: Consolas, monospace;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.94rem;
+  padding: 11px 18px;
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(135deg, var(--acento), var(--secundario));
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:hover { transform: translateY(-2px); opacity: 0.95; }
+.btn-verde { background: linear-gradient(135deg, #10b981, #059669); }
+.btn-cyan { background: linear-gradient(135deg, #0ea5e9, #6366f1); }
+.btn-rojo { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.btn-borde { background: rgba(255,255,255,0.08); border: 1px solid var(--borde); }
+
+.codigo-box {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.86rem;
+  background: #05070f;
+  color: #e2e8f0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  margin-top: 12px;
+}
+
+input[type="text"], select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--borde);
+  background: #05070f;
+  color: #fff;
+  font-size: 0.96rem;
+  margin-top: 6px;
+}
+
+.nota-detective {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-left: 4px solid var(--cyan);
+  background: rgba(56, 189, 248, 0.1);
+  border-radius: 0 14px 14px 0;
+  font-size: 0.93rem;
+}
