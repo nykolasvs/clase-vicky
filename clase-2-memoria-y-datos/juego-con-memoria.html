@@ -3,34 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🕹️ Cazadora de Estrellas - Juego con Memoria</title>
-  <link rel="stylesheet" href="estilos.css">
+  <title>🎮 Juego con Memoria: ¡Tu Personaje viajó hasta acá!</title>
   <style>
-    .tablero-juego {
-      position: relative;
-      height: 310px;
-      background: radial-gradient(circle at center, #1e1b4b 0%, #05070f 85%);
+    :root {
+      --acento: #ec4899;
+      --fondo-1: #2e1065;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: radial-gradient(circle at top, var(--fondo-1) 0%, #090b16 75%);
+      color: #f8fafc;
+      min-height: 100vh;
+      padding: 22px 16px 60px;
+      text-align: center;
+    }
+
+    .contenedor { max-width: 860px; margin: 0 auto; }
+
+    .tarjeta-juego {
+      background: rgba(255, 255, 255, 0.08);
       border: 2px solid var(--acento);
-      border-radius: 22px;
+      border-radius: 28px;
+      padding: 28px;
+      margin-top: 18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+
+    .marcadores {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .caja-puntos {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .num {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 6px 0;
+    }
+
+    .cancha {
+      position: relative;
+      height: 320px;
+      background: rgba(0, 0, 0, 0.55);
+      border: 2px dashed rgba(255,255,255,0.25);
+      border-radius: 24px;
       overflow: hidden;
-      margin: 18px 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 20px;
       user-select: none;
     }
 
-    .estrella-btn {
+    .objetivo {
       position: absolute;
-      font-size: 2.8rem;
-      cursor: pointer;
+      font-size: 3.4rem;
       background: none;
       border: none;
+      cursor: pointer;
       transition: transform 0.1s ease;
-      filter: drop-shadow(0 0 12px #fbbf24);
+      filter: drop-shadow(0 0 14px var(--acento));
     }
 
-    .estrella-btn:active { transform: scale(0.8); }
+    .objetivo:active { transform: scale(0.75); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 13px 24px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--acento), #6366f1);
+    }
+
+    .estante-trofeos {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .medalla {
+      background: rgba(0,0,0,0.45);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 12px 18px;
+      opacity: 0.35;
+      transition: all 0.3s ease;
+    }
+
+    .medalla.ganada {
+      opacity: 1;
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.18);
+      transform: scale(1.06);
+    }
   </style>
 </head>
 <body>
@@ -39,144 +127,145 @@
   <audio id="snd-record" src="audios/super-record.wav"></audio>
 
   <div class="contenedor">
-    <div style="margin-bottom: 16px;">
-      <a class="btn btn-borde" href="index.html">⬅ Volver a la Portada de la Clase 2</a>
+    <div style="text-align: left;">
+      <a class="btn" href="index.html" style="background: rgba(255,255,255,0.12); font-size:0.92rem; padding:10px 18px;">
+        ⬅ Volver a mi Mundo Personalizado
+      </a>
     </div>
 
-    <section class="paso-card">
-      <span class="etiqueta-paso">Mini-Juego de Demostración</span>
-      <h1 id="titulo-jugadora" style="font-size: 1.9rem;">🕹️ Cazadora de Estrellas</h1>
-      <p class="texto-guia" id="sub-mochila">
-        ¡Mirá cómo este archivo HTML leyó el nombre, el color y la mochila que guardaste en la página anterior!
-      </p>
+    <div class="tarjeta-juego">
+      <div id="avatar-gigante" style="font-size: 4.2rem; line-height: 1;">🦄</div>
+      <h1 id="saludo-juego" style="font-size: 2rem; margin-top: 8px;">¡Bienvenida al Juego!</h1>
+      <p id="mochila-juego" style="color: #cbd5e1; margin-top: 6px; font-size: 1.05rem;"></p>
 
-      <div class="grilla-3">
-        <div class="caja-interna" style="text-align:center;">
-          <span style="font-size:0.85rem; color:var(--gris);">Puntos de ESTA Partida (Variable común)</span>
-          <div class="numero-gigante" id="pts-actuales" style="color:var(--cyan);">0</div>
-          <small style="color:var(--gris);">Se borra al recargar</small>
+      <div class="marcadores">
+        <div class="caja-puntos">
+          <div>🎈 Puntos de Ahora</div>
+          <div class="num" id="pts-ahora" style="color:#38bdf8;">0</div>
+          <small style="color:#94a3b8;">(Empieza en 0 cada partida)</small>
         </div>
 
-        <div class="caja-interna" style="text-align:center; border-color:var(--ambar);">
-          <span style="font-size:0.85rem; color:var(--ambar); font-weight:700;">🏆 RÉCORD GUARDADO (localStorage)</span>
-          <div class="numero-gigante" id="pts-record" style="color:var(--ambar);">0</div>
-          <small style="color:var(--verde);">¡No se borra aunque toques F5!</small>
+        <div class="caja-puntos" style="border: 2px solid #fbbf24;">
+          <div style="color:#fbbf24; font-weight:800;">🏆 TU RÉCORD EN MEMORIA</div>
+          <div class="num" id="pts-record" style="color:#fbbf24;">0</div>
+          <small style="color:#34d399;">¡No se borra nunca!</small>
         </div>
 
-        <div class="caja-interna" style="text-align:center;">
-          <span style="font-size:0.85rem; color:var(--gris);">⏱️ Tiempo Restante</span>
-          <div class="numero-gigante" id="tiempo">12s</div>
-          <button class="btn" id="btn-jugar" onclick="iniciarPartida()" style="width:100%; padding:8px;">▶ ¡Empezar a Jugar!</button>
+        <div class="caja-puntos">
+          <div>⏱️ Tiempo</div>
+          <div class="num" id="reloj-txt">12s</div>
+          <button class="btn" id="btn-arrancar" onclick="empezar()" style="padding:8px 16px; font-size:0.95rem;">▶ ¡Jugar!</button>
         </div>
       </div>
 
-      <!-- Zona donde aparecen las estrellas -->
-      <div class="tablero-juego" id="tablero">
-        <div id="mensaje-centro" style="text-align:center; padding:20px;">
-          <div style="font-size:3rem; margin-bottom:8px;">🌟</div>
-          <strong>Tocá "Empezar a Jugar" y atrapá todas las estrellas que puedas en 12 segundos</strong>
+      <div class="cancha" id="cancha">
+        <div>
+          <div style="font-size: 3rem; margin-bottom: 8px;">⭐</div>
+          <strong style="font-size: 1.2rem;">Tocá "¡Jugar!" y atrapá todas las estrellas que puedas</strong>
         </div>
       </div>
 
-      <div class="codigo-box">// 💡 Así podés guardar el Récord en el juego que hiciste en tu compu:
-let recordGuardado = Number(localStorage.getItem("mi_record") || 0);
-
-if (puntosActuales > recordGuardado) {
-    localStorage.setItem("mi_record", puntosActuales); // ¡Guarda el nuevo récord para siempre!
-}</div>
-    </section>
+      <h3>🏅 Tus Trofeos Guardados en la Memoria:</h3>
+      <div class="estante-trofeos">
+        <div class="medalla" id="med-1">🥉<br><strong>5 Puntos</strong></div>
+        <div class="medalla" id="med-2">🥈<br><strong>10 Puntos</strong></div>
+        <div class="medalla" id="med-3">🏆<br><strong>15 Puntos</strong></div>
+        <div class="medalla" id="med-4">👑<br><strong>20 Puntos</strong></div>
+      </div>
+    </div>
   </div>
 
   <script>
     let puntos = 0;
     let record = Number(localStorage.getItem('vicky_record_estrellas') || 0);
-    let segundos = 12;
-    let reloj = null;
-    let jugando = false;
+    let tiempo = 12;
+    let timer = null;
+    let activo = false;
+    let miAvatar = '🦄';
 
-    // Al abrir el juego, leemos el perfil y la mochila guardados en index.html
     window.addEventListener('DOMContentLoaded', () => {
       const nombre = localStorage.getItem('vicky_nombre') || 'Vicky';
-      const avatar = localStorage.getItem('vicky_avatar') || '🦋';
+      miAvatar = localStorage.getItem('vicky_avatar') || '🦄';
       const color = localStorage.getItem('vicky_color') || '#ec4899';
-      const mochila = JSON.parse(localStorage.getItem('vicky_mochila') || '[]');
+      const fondo1 = localStorage.getItem('vicky_fondo1') || '#2e1065';
+      const objetos = JSON.parse(localStorage.getItem('vicky_mochila') || '["🎸","🎧"]');
 
       document.documentElement.style.setProperty('--acento', color);
-      document.getElementById('titulo-jugadora').textContent = `${avatar} Cazadora de Estrellas • Jugadora: ${nombre}`;
-      document.getElementById('pts-record').textContent = record;
+      document.documentElement.style.setProperty('--fondo-1', fondo1);
 
-      if (mochila.length > 0) {
-        document.getElementById('sub-mochila').innerHTML = `🎒 <strong>Objetos que trajiste desde la portada en tu memoria:</strong> ${mochila.join(' • ')}`;
-      }
+      document.getElementById('avatar-gigante').textContent = miAvatar;
+      document.getElementById('saludo-juego').textContent = `¡A jugar, ${nombre}!`;
+      document.getElementById('mochila-juego').textContent = objetos.length > 0
+        ? `Trajiste desde la otra página: ${objetos.join('  ')}`
+        : '¡Mirá cómo esta página recordó tu nombre, tu personaje y tus colores!';
+
+      actualizarTrofeos();
     });
 
-    function iniciarPartida() {
-      if (jugando) return;
-      jugando = true;
+    function actualizarTrofeos() {
+      document.getElementById('pts-record').textContent = record;
+      document.getElementById('med-1').classList.toggle('ganada', record >= 5);
+      document.getElementById('med-2').classList.toggle('ganada', record >= 10);
+      document.getElementById('med-3').classList.toggle('ganada', record >= 15);
+      document.getElementById('med-4').classList.toggle('ganada', record >= 20);
+    }
+
+    function empezar() {
+      if (activo) return;
+      activo = true;
       puntos = 0;
-      segundos = 12;
-      document.getElementById('pts-actuales').textContent = '0';
-      document.getElementById('tiempo').textContent = segundos + 's';
-      document.getElementById('btn-jugar').textContent = '🔥 ¡Atrapa las estrellas!';
+      tiempo = 12;
+      document.getElementById('pts-ahora').textContent = '0';
+      document.getElementById('reloj-txt').textContent = '12s';
+      document.getElementById('btn-arrancar').textContent = '🔥 ¡Rápido!';
+      crearObjetivo();
 
-      aparecerEstrella();
-
-      reloj = setInterval(() => {
-        segundos--;
-        document.getElementById('tiempo').textContent = segundos + 's';
-        if (segundos <= 0) {
-          terminarPartida();
+      timer = setInterval(() => {
+        tiempo--;
+        document.getElementById('reloj-txt').textContent = tiempo + 's';
+        if (tiempo <= 0) {
+          clearInterval(timer);
+          activo = false;
+          const s = document.getElementById('snd-record');
+          s.currentTime = 0;
+          s.play().catch(() => {});
+          document.getElementById('cancha').innerHTML = `
+            <div>
+              <div style="font-size:3.2rem;">🎉</div>
+              <h2>¡Hiciste ${puntos} puntos!</h2>
+              <p style="color:#34d399; margin-top:6px;">Tu récord de ${record} puntos y tus medallas quedaron guardados en la memoria.</p>
+            </div>
+          `;
+          document.getElementById('btn-arrancar').textContent = '🔄 Jugar de Nuevo';
         }
       }, 1000);
     }
 
-    function aparecerEstrella() {
-      if (!jugando) return;
-      const tablero = document.getElementById('tablero');
-      tablero.innerHTML = '';
-      const btn = document.createElement('button');
-      btn.className = 'estrella-btn';
-      btn.textContent = Math.random() > 0.25 ? '⭐' : '💎';
+    function crearObjetivo() {
+      if (!activo) return;
+      const cancha = document.getElementById('cancha');
+      cancha.innerHTML = '';
+      const b = document.createElement('button');
+      b.className = 'objetivo';
+      const iconos = ['⭐', '💎', '🌟', miAvatar];
+      b.textContent = iconos[puntos % iconos.length];
+      b.style.left = Math.floor(Math.random() * Math.max(40, cancha.clientWidth - 80)) + 'px';
+      b.style.top = Math.floor(Math.random() * Math.max(40, cancha.clientHeight - 80)) + 'px';
 
-      const maxX = Math.max(40, tablero.clientWidth - 70);
-      const maxY = Math.max(40, tablero.clientHeight - 70);
-      btn.style.left = Math.floor(Math.random() * maxX) + 'px';
-      btn.style.top = Math.floor(Math.random() * maxY) + 'px';
-
-      btn.onclick = () => {
+      b.onclick = () => {
         puntos++;
-        document.getElementById('pts-actuales').textContent = puntos;
-        const snd = document.getElementById('snd-moneda');
-        snd.currentTime = 0;
-        snd.play().catch(() => {});
-
+        document.getElementById('pts-ahora').textContent = puntos;
+        const s = document.getElementById('snd-moneda');
+        s.currentTime = 0;
+        s.play().catch(() => {});
         if (puntos > record) {
           record = puntos;
           localStorage.setItem('vicky_record_estrellas', record);
-          document.getElementById('pts-record').textContent = record;
+          actualizarTrofeos();
         }
-        aparecerEstrella();
+        crearObjetivo();
       };
-
-      tablero.appendChild(btn);
-    }
-
-    function terminarPartida() {
-      clearInterval(reloj);
-      jugando = false;
-      const snd = document.getElementById('snd-record');
-      snd.currentTime = 0;
-      snd.play().catch(() => {});
-
-      const tablero = document.getElementById('tablero');
-      tablero.innerHTML = `
-        <div style="text-align:center; padding:20px;">
-          <div style="font-size:2.6rem; margin-bottom:8px;">🏆</div>
-          <h3 style="font-size:1.4rem; margin-bottom:6px;">¡Tiempo cumplido! Hiciste ${puntos} puntos</h3>
-          <p style="color:#34d399;">Tu Récord Máximo (${record} pts) quedó guardado en <code>localStorage</code>. ¡Probá apretar F5 y vas a ver que no se borra!</p>
-        </div>
-      `;
-      document.getElementById('btn-jugar').textContent = '🔄 Jugar Otra Vez';
+      cancha.appendChild(b);
     }
   </script>
 </body>
